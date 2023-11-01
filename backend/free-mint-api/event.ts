@@ -7,7 +7,9 @@ export const eventJSON: APIGatewayProxyEvent = {
   "httpMethod": "POST",
   "isBase64Encoded": false,
   "queryStringParameters": {
-    "foo": "bar"
+    "firstTokenId": "1",
+    "secondTokenId": "2",
+    "address": "0x0000000000000000"
   },
   "pathParameters": {
     "firstTokenId": "1",

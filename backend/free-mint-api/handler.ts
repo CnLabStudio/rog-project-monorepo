@@ -64,11 +64,8 @@ export const mint = async (
     const signer = getSigner()
     const contract = getContract(signer)
 
-    const uriPrefix = await contract.uriPrefix()
+    await contract.airdropInPair(firstTokenId, secondTokenId, address)
 
-    // await contract.airdropInPair(firstTokenId, secondTokenId, address)
-
-    // return two token uri?
     return {
       statusCode: 200,
       headers: {
@@ -76,7 +73,7 @@ export const mint = async (
         "Access-Control-Allow-Origin": "*",
         "Access-Control-Allow-Methods": "OPTIONS,POST,GET",
       },
-      body: JSON.stringify({uriPrefix: uriPrefix}),
+      body: JSON.stringify({message: "Free mint done."}),
     };
   } catch (error) {
     console.error(error);
