@@ -10,3 +10,5 @@ typechain-types
 cache
 artifacts
 
+*.json
+*.png
