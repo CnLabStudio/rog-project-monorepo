@@ -1,5 +1,6 @@
 import 'dotenv/config'
 import { ethers } from 'hardhat'
+import { PhaseOneFreeMint__factory } from '../build/typechain'
 
 async function main() {
   let addrs = await ethers.getSigners()
@@ -10,12 +11,9 @@ async function main() {
     (await ethers.provider.getBalance(addrs[0].address)).toString()
   )
 
-  const PhaseOneFreeMint = await ethers.getContractFactory(
-    'PhaseOneFreeMint',
+  const phaseOneFreeMint = PhaseOneFreeMint__factory.connect(
+    '0xA2fD0Da25F0662e490bA5403D097B7D8575A76eA',
     addrs[0]
-  )
-  const phaseOneFreeMint = PhaseOneFreeMint.attach(
-    '0xA2fD0Da25F0662e490bA5403D097B7D8575A76eA'
   )
   console.log('Contract address:', await phaseOneFreeMint.getAddress())
 
