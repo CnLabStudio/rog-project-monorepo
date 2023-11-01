@@ -74,7 +74,7 @@ export const mint = async (
         "Access-Control-Allow-Origin": process.env.CORS ?? "*",
         "Access-Control-Allow-Methods": "OPTIONS,POST,GET",
       },
-      body: JSON.stringify({message: "Free mint done."}),
+      body: JSON.stringify({message: `sucessfully mint #${firstTokenId} & #${secondTokenId} to ${address}.`}),
     };
   } catch (error) {
     console.error(error);
