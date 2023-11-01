@@ -1,6 +1,6 @@
 # serverless.yml
 org: tihechen
-app: free-mint-api
+app: rog
 service: free-mint-api
 frameworkVersion: "3"
 useDotenv: true

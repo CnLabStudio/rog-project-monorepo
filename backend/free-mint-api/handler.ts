@@ -32,8 +32,6 @@ function isValid(value: number): boolean {
 export const mint = async (
   event: APIGatewayProxyEvent
 ): Promise<APIGatewayProxyResult> => {
-  console.log("PRIVATE_KEY", process.env.PRIVATE_KEY!)
-
   // get token id & addr from api url
   let firstTokenId: number;
   let secondTokenId: number;
