@@ -20,6 +20,9 @@ contract PhaseOneFreeMint is Ownable, ERC1155 {
     /// @dev uri parameters of the tokenURI of the ERC721 tokenss
     string public uriPrefix;
     string public uriSuffix;
+    /// @dev check if the address has already minted
+    /// receiver => minted
+    mapping(address => bool) public minted;
 
     /*///////////////////////////////////////////////////////////////
                                 Events
@@ -28,8 +31,12 @@ contract PhaseOneFreeMint is Ownable, ERC1155 {
     event URISet(string uriPrefix, string uriSuffix);
 
     function airdropInPair(uint256 _tokenId0, uint256 _tokenId1, address _receiver) external onlyOwner {
+        if (minted[_receiver]) {
+            revert("Already minted");
+        }
         _airdrop(_tokenId0, _receiver);
         _airdrop(_tokenId1, _receiver);
+        minted[_receiver] = true;
     }
 
     function _airdrop(uint256 _tokenId, address _receiver) internal {
