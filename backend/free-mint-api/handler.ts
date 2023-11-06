@@ -72,7 +72,7 @@ export const mint = async (
       headers: {
         "Access-Control-Allow-Headers": "Content-Type",
         "Access-Control-Allow-Origin": process.env.CORS ?? "*",
-        "Access-Control-Allow-Methods": "OPTIONS,POST,GET",
+        "Access-Control-Allow-Methods": "GET",
       },
       body: JSON.stringify({message: `sucessfully mint #${firstTokenId} & #${secondTokenId} to ${address}.`}),
     };
@@ -82,7 +82,7 @@ export const mint = async (
       statusCode: 501,
       body: JSON.stringify(
         {
-          message: "Error occured during processing metadata.",
+          message: "Error occured during minting nft.",
         },
         null,
         2
