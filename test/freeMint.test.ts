@@ -27,6 +27,14 @@ describe('PhaseOneFreeMint', () => {
         phaseOneFreeMint.connect(address2).airdropInPair(0, 1, address2.address)
       ).to.be.rejectedWith(`OwnableUnauthorizedAccount("${address2.address}")`)
     })
+
+    it('should revert if already minted', async () => {
+      const [_, address2] = await ethers.getSigners()
+      await phaseOneFreeMint.airdropInPair(0, 1, address2.address)
+      await expect(
+        phaseOneFreeMint.airdropInPair(0, 1, address2.address)
+      ).to.be.rejectedWith('Already minted')
+    })
   })
 
   describe('merge', () => {
