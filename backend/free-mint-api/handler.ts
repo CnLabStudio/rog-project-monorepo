@@ -2,6 +2,7 @@
 import { APIGatewayProxyEvent, APIGatewayProxyResult } from "aws-lambda";
 import { Contract, Signer, Wallet, ethers } from "ethers";
 import ABI from "./abi.json";
+import PgConn from "./database/pg";
 
 function getSigner(): Signer {
   const provider = new ethers.JsonRpcProvider(process.env.NODE_URL!)
@@ -32,6 +33,9 @@ function isValid(value: number): boolean {
 export const mint = async (
   event: APIGatewayProxyEvent
 ): Promise<APIGatewayProxyResult> => {
+  const pgConn = new PgConn();
+  await pgConn.init();
+
   // get token id & addr from api url
   let firstTokenId: number;
   let secondTokenId: number;
@@ -45,8 +49,10 @@ export const mint = async (
   console.log("second free mint tokenId : ", secondTokenId);
   console.log("user eth address : ", address);
 
+  const userMinted = await pgConn.queryUser(address);
+
   // input data validation
-  if (!isValid(firstTokenId) || !isValid(secondTokenId)) {
+  if (!isValid(firstTokenId) || !isValid(secondTokenId) || userMinted) {
     console.error("Validation Failed");
     return {
       statusCode: 400,
@@ -66,6 +72,14 @@ export const mint = async (
 
     const tx = await contract.airdropInPair(firstTokenId, secondTokenId, address)
     await tx.wait()
+
+    const insertResult = await pgConn.insertUser(address)
+
+    await pgConn.destroy()
+
+    if (!insertResult) {
+      throw new Error("Mint nft failed")
+    }
 
     return {
       statusCode: 200,

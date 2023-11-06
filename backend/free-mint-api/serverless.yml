@@ -10,24 +10,9 @@ provider:
   region: ${env:REGION}
   memorySize: 128 # optional, in MB, default is 1024
   timeout: 29 # optional, in seconds, default is 6
-  stage: dev
   logs:
     httpApi: true
-  httpApi:
-    name: rog-dev
-    # set true to configure CORS policy by AWS
-    # default setting is to allow all origins, methods and headers
-    # replace all cors headers in lambda response
-    # build own cors response when encount POST requests
-    cors:
-      allowedOrigins:
-        - ${env:CORS}
-      allowedHeaders:
-        - Content-Type
-      allowedMethods:
-        - GET
-      allowCredentials: false
-      maxAge: 6000
+  httpApi: true
 
 functions:
   freemint:
