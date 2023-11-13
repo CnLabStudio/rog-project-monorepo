@@ -12,8 +12,10 @@ provider:
   timeout: 29 # optional, in seconds, default is 6
   logs:
     httpApi: true
-  httpApi: true
+  httpApi:
+    cors: true
 
+# TODO: add avatar metadata handler & avatar reveal handler
 functions:
   freemint:
     handler: handler.mint
