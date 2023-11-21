@@ -1,29 +1,35 @@
 # serverless.yml
 org: tihechen
 app: rog
-service: free-mint-api
+service: rog-services
 frameworkVersion: "3"
 useDotenv: true
 provider:
-  name: aws
-  runtime: nodejs18.x
-  region: ${env:REGION}
-  memorySize: 128 # optional, in MB, default is 1024
-  timeout: 29 # optional, in seconds, default is 6
-  logs:
-    httpApi: true
-  httpApi:
-    cors: true
+    name: aws
+    runtime: nodejs18.x
+    region: ${env:REGION}
+    memorySize: 128 # optional, in MB, default is 1024
+    timeout: 29 # optional, in seconds, default is 6
+    logs:
+        httpApi: true
+    httpApi:
+        cors: true
 
 # TODO: add avatar metadata handler & avatar reveal handler
 functions:
-  freemint:
-    handler: handler.mint
-    events:
-      - httpApi:
-          path: /mint
-          method: get
+    freemint:
+        handler: routes/FreeMintHandler.mint
+        events:
+            - httpApi:
+                  path: /mint
+                  method: get
+    metadata:
+        handler: routes/AvatarMetadataHandler.metadata
+        events:
+            - httpApi:
+                  path: /metadata/{tokenId}
+                  method: get
 
 plugins:
-  - serverless-plugin-typescript
-  - serverless-dotenv-plugin
+    - serverless-plugin-typescript
+    - serverless-dotenv-plugin

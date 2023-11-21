@@ -1,41 +1,38 @@
 "use strict";
 import { APIGatewayProxyEvent, APIGatewayProxyResult } from "aws-lambda";
+import { getMetadataById } from "../utils/AvartarBlindBoxMetadataDispatcher";
 
 export const metadata = async (
-  event: APIGatewayProxyEvent,
+    event: APIGatewayProxyEvent,
 ): Promise<APIGatewayProxyResult> => {
-  // get token id & addr from api url
-  let firstTokenId = Number(event.queryStringParameters!.firstTokenId);
-  let secondTokenId = Number(event.queryStringParameters!.secondTokenId);
-  let address = event.queryStringParameters!.address!;
+    // get token id & addr from api url
+    let tokenId = Number(event.pathParameters!.tokenId);
 
-  console.log("first free mint tokenId : ", firstTokenId);
-  console.log("second free mint tokenId : ", secondTokenId);
-  console.log("user eth address : ", address);
+    console.log("query token id : ", tokenId);
 
-  try {
-    return {
-      statusCode: 200,
-      headers: {
-        "Access-Control-Allow-Headers": "Content-Type",
-        "Access-Control-Allow-Origin": process.env.CORS ?? "*",
-        "Access-Control-Allow-Methods": "GET",
-      },
-      body: JSON.stringify({
-        message: `sucessfully mint #${firstTokenId} & #${secondTokenId} to ${address}.`,
-      }),
-    };
-  } catch (error) {
-    console.error(error);
-    return {
-      statusCode: 501,
-      body: JSON.stringify(
-        {
-          message: "Error occured during processing metadata.",
-        },
-        null,
-        2,
-      ),
-    };
-  }
+    try {
+        const metadata = getMetadataById(tokenId);
+
+        return {
+            statusCode: 200,
+            headers: {
+                "Access-Control-Allow-Headers": "Content-Type",
+                "Access-Control-Allow-Origin": process.env.CORS ?? "*",
+                "Access-Control-Allow-Methods": "GET",
+            },
+            body: JSON.stringify(metadata),
+        };
+    } catch (error) {
+        console.error(error);
+        return {
+            statusCode: 501,
+            body: JSON.stringify(
+                {
+                    message: "Error occured during processing metadata.",
+                },
+                null,
+                2,
+            ),
+        };
+    }
 };

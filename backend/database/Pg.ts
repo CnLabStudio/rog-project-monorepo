@@ -1,19 +1,19 @@
 import { Client } from "pg";
 
 export default class PgConn {
-  private client: Client;
+    private client: Client;
 
-  constructor() {
-    this.client = new Client(process.env.POSTGRESQL_URL);
-  }
+    constructor() {
+        this.client = new Client(process.env.POSTGRESQL_URL);
+    }
 
-  getClient() {
-    return this.client;
-  }
+    getClient() {
+        return this.client;
+    }
 
-  async init() {
-    await this.client.connect();
-    await this.client.query(`
+    async init() {
+        await this.client.connect();
+        await this.client.query(`
             CREATE TABLE IF NOT EXISTS users
             (
                 id serial not null PRIMARY KEY, 
@@ -22,9 +22,9 @@ export default class PgConn {
                 mint bool not null
             );
         `);
-  }
+    }
 
-  async destroy() {
-    await this.client.end();
-  }
+    async destroy() {
+        await this.client.end();
+    }
 }
