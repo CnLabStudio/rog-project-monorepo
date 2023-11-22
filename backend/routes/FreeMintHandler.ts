@@ -26,7 +26,7 @@ export const mint = async (
     const userService = new UserService(pgConn);
 
     // fetch user data
-    const userMinted = await userService.queryUser(address);
+    const userMinted = await userService.isUserMinted(address);
 
     // input data validation
     if (!isValid([firstTokenId, secondTokenId]) || userMinted) {
@@ -69,7 +69,7 @@ export const mint = async (
             statusCode: 200,
             headers: {
                 "Access-Control-Allow-Headers": "Content-Type",
-                "Access-Control-Allow-Origin": process.env.CORS ?? "*",
+                "Access-Control-Allow-Origin": "*",
                 "Access-Control-Allow-Methods": "GET",
             },
             body: JSON.stringify({

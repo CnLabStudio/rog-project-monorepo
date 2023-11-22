@@ -1,7 +1,9 @@
 import { FIRST_TOKEN_ID, LAST_TOKEN_ID } from "../constants";
 
 export function isValid(values: number[]): boolean {
-    for (let i = 0; i < values.length; i++) {
+    const len = values.length;
+
+    for (let i = 0; i < len; i++) {
         const value = values[i];
         // - 0.check for valid number
         if (Number.isNaN(value)) {

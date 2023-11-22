@@ -5,11 +5,11 @@ import {
     RedAether,
     TheAether,
 } from "../metadata";
-
-interface Metadata {}
+import { Metadata } from "../types";
 
 export function getMetadataById(tokenId: number): Metadata {
     let metadata: Metadata;
+
     switch (tokenId) {
         case 0:
             metadata = BlueAether;
@@ -27,5 +27,6 @@ export function getMetadataById(tokenId: number): Metadata {
         default:
             throw new Error("Invalid TokenId");
     }
+    
     return metadata;
 }
