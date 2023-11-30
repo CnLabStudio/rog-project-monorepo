@@ -4,7 +4,7 @@ import PgConn from "../database/Pg";
 import { getContract, getSigner } from "../utils/EthersHelper";
 import { isValid } from "../utils/TokenValidator";
 import UserService from "../services/UserService";
-import ABI from "../abis/freemint_abi.json";
+import { FreeMintAbi } from "../abis";
 
 export const mint = async (
     event: APIGatewayProxyEvent,
@@ -45,7 +45,7 @@ export const mint = async (
 
     try {
         const signer = getSigner();
-        const contract = getContract(signer, ABI);
+        const contract = getContract(signer, FreeMintAbi);
 
         // airdrop nfts to the given address
         const tx = await contract.airdropInPair(

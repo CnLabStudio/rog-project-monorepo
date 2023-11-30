@@ -13,6 +13,7 @@ export default class PgConn {
 
     async init() {
         await this.client.connect();
+        // create User table if not exists
         await this.client.query(`
             CREATE TABLE IF NOT EXISTS users
             (
@@ -20,6 +21,17 @@ export default class PgConn {
                 created TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
                 address varchar(100) not null, 
                 mint bool not null
+            );
+        `);
+
+        // create Token table if not exists
+        await this.client.query(`
+            CREATE TABLE IF NOT EXISTS tokens
+            (
+                id serial not null PRIMARY KEY, 
+                created TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
+                token_id INT not null, 
+                image_id INT not null
             );
         `);
     }

@@ -1,17 +1,35 @@
 "use strict";
 import { APIGatewayProxyEvent, APIGatewayProxyResult } from "aws-lambda";
-import { getMetadataById } from "../utils/AvartarBlindBoxMetadataDispatcher";
+import { getMetadataByToken } from "../utils/AvartarBlindBoxMetadataDispatcher";
+import PgConn from "../database/Pg";
+import TokenService from "../services/TokenService";
+import { getContract, getSigner } from "../utils/EthersHelper";
+import { AvatarAbi } from "../abis";
 
 export const metadata = async (
     event: APIGatewayProxyEvent,
 ): Promise<APIGatewayProxyResult> => {
     // get token id & addr from api url
-    let tokenId = Number(event.pathParameters!.tokenId);
+    const tokenId = Number(event.pathParameters!.tokenId);
 
     console.log("query token id : ", tokenId);
 
+    // connect postgres
+    const pgConn = new PgConn();
+    await pgConn.init();
+
+    // create user service
+    const tokenService = new TokenService(pgConn);
+
+    const token = await tokenService.getTokenById(tokenId);
+
     try {
-        const metadata = getMetadataById(tokenId);
+        const signer = getSigner();
+        const contract = getContract(signer, AvatarAbi);
+
+        // need to get which blind box should return
+        // if nft is revealed, return the given metadata.
+        const metadata = await getMetadataByToken(token, contract);
 
         return {
             statusCode: 200,
