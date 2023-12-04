@@ -18,7 +18,7 @@ async function main() {
   console.log('Contract address:', await phaseOneFreeMint.getAddress())
 
   await phaseOneFreeMint.setURI(
-    'ipfs://QmatE35xdAttfiwHTZdCiTJDWajVHMXy4uTVH7PfjnqGSZ/',
+    'ipfs://QmVP4B73SedN65s91rv26ihoYWkCYe2v5EXpNEhtkpCrQW/',
     '.json'
   )
 }
