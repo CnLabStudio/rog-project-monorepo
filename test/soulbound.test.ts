@@ -4,8 +4,6 @@ import { PhaseTwoSoulBound } from '../build/typechain'
 import { SignerWithAddress } from '@nomicfoundation/hardhat-ethers/signers'
 
 describe('PhaseTwoSoulBound', function () {
-  const _maxSupply: number = 10000
-  const _royaltyFee: number = 1000
   const _uriPrefix: string = 'https://example.com/'
   const _uriSuffix: string = '.json'
   let signers: SignerWithAddress[]
@@ -16,13 +14,7 @@ describe('PhaseTwoSoulBound', function () {
     phaseTwoSoulBound = await ethers
       .getContractFactory('PhaseTwoSoulBound')
       .then((factory) =>
-        factory.deploy(
-          signers[0].address,
-          _uriPrefix,
-          _uriSuffix,
-          _maxSupply,
-          _royaltyFee
-        )
+        factory.deploy(signers[0].address, _uriPrefix, _uriSuffix)
       )
   })
 
