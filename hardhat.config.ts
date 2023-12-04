@@ -29,6 +29,7 @@ function getNetworks(): NetworksUserConfig {
         //blockNumber: 15966650,
         enabled: true,
       },
+      accounts,
     },
     polygon: {
       url: `https://polygon-mainnet.g.alchemy.com/v2/${alchemyApiKey}`,
