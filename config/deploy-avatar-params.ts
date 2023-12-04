@@ -1,0 +1,14 @@
+import 'dotenv/config'
+
+module.exports = [
+  '0x45F571d30157a2E548A9a5789F69558aC56955dA',
+  '0xe9EAa7Ac84dca4f68F763CE9743A751C6d9c24dc',
+  10000,
+  1000,
+  '0x326C977E6efc84E512bB9C30f76E30c160eD06FB',
+  '0x99aFAf084eBA697E584501b8Ed2c0B37Dd136693',
+  500_000,
+  3,
+  'hash',
+  'ipfshash',
+]
