@@ -3,7 +3,6 @@ pragma solidity 0.8.20;
 
 import "erc721a/contracts/extensions/ERC721AQueryable.sol";
 import "@openzeppelin/contracts/access/Ownable.sol";
-import "@openzeppelin/contracts/token/common/ERC2981.sol";
 import "@openzeppelin/contracts/utils/Strings.sol";
 
 error ExceedMaxTokens();
@@ -11,16 +10,15 @@ error TokenNotExist();
 error TokenIsSoulbound();
 error InvalidInput();
 
-contract PhaseTwoSoulBound is ERC721AQueryable, Ownable, ERC2981 {
+contract PhaseTwoSoulBound is ERC721AQueryable, Ownable {
     using Strings for uint256;
 
     /*///////////////////////////////////////////////////////////////
                          State Variables V1
     //////////////////////////////////////////////////////////////*/
 
-    /// @dev maximum supply of the ERC721A tokens
-    uint256 public maxSupply;
-
+    /// @dev address that can give away tokens
+    address public mintRole;
     /// @dev uri parameters of the tokenURI of the ERC721 tokenss
     string public uriPrefix;
     string public uriSuffix;
@@ -37,18 +35,22 @@ contract PhaseTwoSoulBound is ERC721AQueryable, Ownable, ERC2981 {
                             Constructor
     //////////////////////////////////////////////////////////////*/
 
-    constructor(
-        address _treasury,
-        string memory _uriPrefix,
-        string memory _uriSuffix,
-        uint256 _maxSupply,
-        uint96 _royaltyFee
-    ) ERC721A("Ideathon2023", "IDTH2023") Ownable(msg.sender) {
+    constructor(address _mintRole, string memory _uriPrefix, string memory _uriSuffix)
+        ERC721A("PhaseTwoSoulBound", "PTSB")
+        Ownable(msg.sender)
+    {
+        mintRole = _mintRole;
         uriPrefix = _uriPrefix;
         uriSuffix = _uriSuffix;
-        maxSupply = _maxSupply;
+    }
 
-        _setDefaultRoyalty(_treasury, _royaltyFee);
+    /*///////////////////////////////////////////////////////////////
+                            Modifiers
+    //////////////////////////////////////////////////////////////*/
+
+    modifier onlyMintRole() {
+        require(msg.sender == mintRole, "Caller is not the mint role");
+        _;
     }
 
     /*///////////////////////////////////////////////////////////////
@@ -59,19 +61,12 @@ contract PhaseTwoSoulBound is ERC721AQueryable, Ownable, ERC2981 {
      * @dev Override same interface function in different inheritance.
      * @param _interfaceId Id of an interface to check whether the contract support
      */
-    function supportsInterface(bytes4 _interfaceId)
-        public
-        view
-        virtual
-        override(IERC721A, ERC721A, ERC2981)
-        returns (bool)
-    {
+    function supportsInterface(bytes4 _interfaceId) public view virtual override(IERC721A, ERC721A) returns (bool) {
         // Supports the following `interfaceId`s:
         // - IERC165: 0x01ffc9a7
         // - IERC721: 0x80ac58cd
         // - IERC721Metadata: 0x5b5e139f
-        // - IERC2981: 0x2a55205a
-        return ERC721A.supportsInterface(_interfaceId) || ERC2981.supportsInterface(_interfaceId);
+        return ERC721A.supportsInterface(_interfaceId);
     }
 
     /**
@@ -95,13 +90,13 @@ contract PhaseTwoSoulBound is ERC721AQueryable, Ownable, ERC2981 {
      * OR
      * - The `to` address must be the 0 address
      */
-    function _beforeTokenTransfers(address _from, address _to, uint256, /*_startTokenId*/ uint256 /*_quantity*/ )
+    function _beforeTokenTransfers(address _from, address, /*_to*/ uint256, /*_startTokenId*/ uint256 /*_quantity*/ )
         internal
         pure
         override
     {
         // Revert if transfers are not from the 0 address and not to the 0 address
-        if (_from != address(0) && _to != address(0)) {
+        if (_from != address(0)) {
             revert TokenIsSoulbound();
         }
 
@@ -117,50 +112,14 @@ contract PhaseTwoSoulBound is ERC721AQueryable, Ownable, ERC2981 {
      * @param _to Address to transfer the tokens
      * @param _quantity Designated amount of tokens
      */
-    function mintGiveawayTokens(address _to, uint256 _quantity) public onlyOwner {
-        if (totalSupply() + _quantity > maxSupply) {
-            revert ExceedMaxTokens();
-        }
-
+    function mintGiveawayTokens(address _to, uint256 _quantity) external onlyMintRole {
         _safeMint(_to, _quantity);
         emit MintTokens(_to, _quantity, totalSupply());
-    }
-
-    /**
-     * @dev Set the maximum total supply of tokens
-     * @param _maxSupply Maximum total supply of the tokens
-     */
-    function setMaxSupply(uint256 _maxSupply) external onlyOwner {
-        if (_maxSupply < totalSupply()) {
-            revert InvalidInput();
-        }
-
-        maxSupply = _maxSupply;
-
-        emit MaxSupplySet(_maxSupply);
     }
 
     /*///////////////////////////////////////////////////////////////
                         Admin Parameters Functions
     //////////////////////////////////////////////////////////////*/
-
-    /**
-     * @dev Set the royalties information for platforms that support ERC2981, LooksRare & X2Y2
-     * @param _receiver Address that should receive royalties
-     * @param _feeNumerator Amount of royalties that collection creator wants to receive
-     */
-    function setDefaultRoyalty(address _receiver, uint96 _feeNumerator) public onlyOwner {
-        _setDefaultRoyalty(_receiver, _feeNumerator);
-    }
-
-    /**
-     * @dev Set the royalties information for platforms that support ERC2981, LooksRare & X2Y2
-     * @param _receiver Address that should receive royalties
-     * @param _feeNumerator Amount of royalties that collection creator wants to receive
-     */
-    function setTokenRoyalty(uint256 _tokenId, address _receiver, uint96 _feeNumerator) external onlyOwner {
-        _setTokenRoyalty(_tokenId, _receiver, _feeNumerator);
-    }
 
     /**
      * @dev Set the URI for tokenURI, which returns the metadata of the token
