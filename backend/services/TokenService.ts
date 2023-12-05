@@ -44,4 +44,15 @@ export default class TokenService {
 
         return token;
     }
+
+    async isRevealed(imageId: number): Promise<boolean> {
+        const count = Number(await this.client.query(
+            `
+                  select count(*), from tokens where image_id = $1 
+              `,
+            [imageId],
+        ))
+
+        return count == 0 ? false : true
+    }
 }

@@ -5,6 +5,7 @@ import PgConn from "../database/Pg";
 import TokenService from "../services/TokenService";
 import { getContract, getSigner } from "../utils/EthersHelper";
 import { AvatarAbi } from "../abis";
+import SoulboundService from "../services/SoulboundService";
 
 export const metadata = async (
     event: APIGatewayProxyEvent,
@@ -21,6 +22,8 @@ export const metadata = async (
     // create user service
     const tokenService = new TokenService(pgConn);
 
+    const soulboundService = new SoulboundService(pgConn);
+
     const token = await tokenService.getTokenById(tokenId);
 
     try {
@@ -29,7 +32,11 @@ export const metadata = async (
 
         // need to get which blind box should return
         // if nft is revealed, return the given metadata.
-        const metadata = await getMetadataByToken(token, contract);
+        const metadata = await getMetadataByToken(
+            token,
+            contract,
+            soulboundService,
+        );
 
         return {
             statusCode: 200,

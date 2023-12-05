@@ -34,6 +34,17 @@ export default class PgConn {
                 image_id INT not null
             );
         `);
+
+        // create Soulbound table if not exists
+        await this.client.query(`
+            CREATE TABLE IF NOT EXISTS soul_bounds
+            (
+                id serial not null PRIMARY KEY, 
+                created TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
+                token_id INT not null, 
+                type INT not null
+            );
+        `);
     }
 
     async destroy() {

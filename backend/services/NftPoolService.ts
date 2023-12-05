@@ -20,6 +20,13 @@ export default class NftPoolService {
     private bluePool: Array<number> = [];
     private thePool: Array<number> = [];
 
+    // TODO: modify pool service
+    // we will have the list of pools
+    // we can store to constants like
+    // GOLD_POOL_START_IDX = 0
+    // GOLD_POOL_SIZE = 100
+    // then we can cal the gold nft range 0 ~ 99
+
     constructor(seed: number, totalNft: number, tokenService: TokenService) {
         this.seed = seed;
         this.tokenService = tokenService;
@@ -55,16 +62,28 @@ export default class NftPoolService {
         }
     }
 
+    // create a pool table to record 
+    // 1. pool type
+    // 2. pool start idx
+    // 3. pool length
+    // 4. last index = start idx + pool length - 1
+
     async revealTokenId(
         pool: POOL_TYPE,
         tokenId: number,
     ): Promise<number | never> {
         // get the given pools
         const tokens = this.pools.get(pool)!;
+        const poolStartIdx = 0
         // get the index of the pools
-        const tokenIndex = (this.seed + tokenId) % tokens.length;
-        // get the imageId
-        const imageId = tokens[tokenIndex];
+        let tokenIndex = (this.seed + tokenId) % tokens.length;
+        let isRevealed = true
+        let imageId = poolStartIdx + tokenIndex
+        // find the image id which is not revealed yet
+        while (isRevealed) {
+            imageId = poolStartIdx + ((tokenIndex + 1) % tokens.length)
+            isRevealed = await this.tokenService.isRevealed(imageId)
+        }
         // save into the db
         const insertResult = await this.tokenService.createToken(
             tokenId,

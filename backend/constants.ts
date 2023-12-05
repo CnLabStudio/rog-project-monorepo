@@ -7,3 +7,6 @@ export const RED_POOL_RANGE = 0;
 export const BLUE_POOL_RANGE = 0;
 export const THE_POOL_RANGE = 0;
 export const TOTAL_NFT_AMOUNT = 0;
+
+export const CID_PREFIX =
+    "ipfs://QmXLecKA2hgC6mP7C6MobRMqAVLvouhp14XEYiDECkNDjH/avatar";
