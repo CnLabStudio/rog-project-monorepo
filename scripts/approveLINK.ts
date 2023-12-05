@@ -4,7 +4,7 @@ import { PhaseThreeAvatar__factory, IERC20__factory } from '../build/typechain'
 
 async function main() {
   const linkAddress = '0x326C977E6efc84E512bB9C30f76E30c160eD06FB'
-  const avatarAddr = '0x1D507ba0e0BdF7694A258583420BEdd80A38aF93'
+  const avatarAddr = '0xd58aC241af832Bd588282932F4Dbb0f85F51DF55'
   let addrs = await ethers.getSigners()
 
   console.log('Deploying contracts with the account:', addrs[0].address)
