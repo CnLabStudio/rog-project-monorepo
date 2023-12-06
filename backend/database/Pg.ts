@@ -47,6 +47,28 @@ export default class PgConn {
         `);
     }
 
+    async insertMockData() {
+        for (let i = 1; i <= 40; i++) {
+            let type;
+            if (i >= 1 && i <= 10) {
+                type = "gold";
+            } else if (i >= 11 && i <= 20) {
+                type = "black";
+            } else if (i >= 21 && i <= 30) {
+                type = "red";
+            } else if (i >= 31 && i <= 40) {
+                type = "blue";
+            }
+
+            await this.client.query(
+                `
+                  insert into soulbounds (token_id, type) values ($1, $2)
+              `,
+                [i, type],
+            );
+        }
+    }
+
     async destroy() {
         await this.client.end();
     }
