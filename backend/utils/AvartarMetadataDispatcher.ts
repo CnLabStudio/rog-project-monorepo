@@ -19,7 +19,10 @@ export async function getMetadataByToken(
     } else {
         // revealed metadata
         metadata = JSON.parse(
-            fs.readFileSync(`../metadata/${avatar.tokenId}.json`, "utf-8"),
+            fs.readFileSync(
+                `../metadata/avatar/${avatar.tokenId}.json`,
+                "utf-8",
+            ),
         );
         metadata.image = `${process.env.CID_PREFIX}${avatar.imageId}.png`;
     }

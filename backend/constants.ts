@@ -3,23 +3,23 @@ export const LAST_TOKEN_ID = 10;
 
 export const GOLD_POOL = {
     startIdx: BigInt(0),
-    size: BigInt(0),
+    size: BigInt(1),
 };
 export const BLACK_POOL = {
-    startIdx: BigInt(0),
-    size: BigInt(0),
+    startIdx: BigInt(1),
+    size: BigInt(1),
 };
 export const RED_POOL = {
-    startIdx: BigInt(0),
-    size: BigInt(0),
+    startIdx: BigInt(2),
+    size: BigInt(1),
 };
 export const BLUE_POOL = {
-    startIdx: BigInt(0),
-    size: BigInt(0),
+    startIdx: BigInt(3),
+    size: BigInt(1),
 };
 export const THE_POOL = {
-    startIdx: BigInt(0),
-    size: BigInt(0),
+    startIdx: BigInt(4),
+    size: BigInt(1),
 };
 
 export const CID_PREFIX =

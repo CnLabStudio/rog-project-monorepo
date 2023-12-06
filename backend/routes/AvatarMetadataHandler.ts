@@ -1,6 +1,6 @@
 "use strict";
 import { APIGatewayProxyEvent, APIGatewayProxyResult } from "aws-lambda";
-import { getMetadataByToken } from "../utils/AvartarBlindBoxMetadataDispatcher";
+import { getMetadataByToken } from "../utils/AvartarMetadataDispatcher";
 import PgConn from "../database/Pg";
 import { getContract, getSigner } from "../utils/EthersHelper";
 import { AvatarAbi } from "../abis";

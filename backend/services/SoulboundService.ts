@@ -43,7 +43,7 @@ export default class SoulboundService {
     }
 
     async getBlindBoxTypeById(tokenId: number): Promise<BlindBoxType> {
-        let type: BlindBoxType
+        let type: BlindBoxType;
 
         if (tokenId == 0) {
             type = BlindBoxType.The;
@@ -54,7 +54,7 @@ export default class SoulboundService {
                 `,
                 [tokenId],
             );
-            type = Number(soulboundFromDb.rows[0]) as BlindBoxType
+            type = Number(soulboundFromDb.rows[0]) as BlindBoxType;
         }
 
         return type;
