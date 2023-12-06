@@ -1,32 +1,27 @@
-import { Contract } from "ethers";
-import {
-    BlackAether,
-    BlueAether,
-    GoldAether,
-    RedAether,
-    TheAether,
-} from "../metadata";
-import { BlindBoxType, Metadata, Token } from "../types";
+import { Avatar, Metadata } from "../types";
 import * as fs from "fs";
 import SoulboundService from "../services/SoulboundService";
+import AvatarService from "../services/AvatarService";
 
 export async function getMetadataByToken(
-    token: Token,
-    contract: Contract,
+    avatar: Avatar,
+    avatarService: AvatarService,
     soulboundService: SoulboundService,
 ): Promise<Metadata | never> {
     let metadata: Metadata;
 
-    if (token.imageId == undefined) {
+    if (avatar.imageId == undefined) {
         // the nft is not revealed yet
-        const soulboundId = await contract.avatarToSoulbound(token.tokenId);
-        metadata = await soulboundService.getSoulboundById(soulboundId);
+        const soulboundId = await avatarService.getSoulboundIdById(
+            avatar.tokenId,
+        );
+        metadata = await soulboundService.getMetadataById(soulboundId);
     } else {
         // revealed metadata
         metadata = JSON.parse(
-            fs.readFileSync(`../metadata/${token.tokenId}.json`, "utf-8"),
+            fs.readFileSync(`../metadata/${avatar.tokenId}.json`, "utf-8"),
         );
-        metadata.image = `${process.env.CID_PREFIX}${token.imageId}.png`;
+        metadata.image = `${process.env.CID_PREFIX}${avatar.imageId}.png`;
     }
 
     return metadata;

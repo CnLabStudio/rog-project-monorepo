@@ -24,9 +24,9 @@ export default class PgConn {
             );
         `);
 
-        // create Token table if not exists
+        // create Avatars table if not exists
         await this.client.query(`
-            CREATE TABLE IF NOT EXISTS tokens
+            CREATE TABLE IF NOT EXISTS avatars
             (
                 id serial not null PRIMARY KEY, 
                 created TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
@@ -37,7 +37,7 @@ export default class PgConn {
 
         // create Soulbound table if not exists
         await this.client.query(`
-            CREATE TABLE IF NOT EXISTS soul_bounds
+            CREATE TABLE IF NOT EXISTS soulbounds
             (
                 id serial not null PRIMARY KEY, 
                 created TIMESTAMP DEFAULT CURRENT_TIMESTAMP,

@@ -2,18 +2,16 @@
 import { APIGatewayProxyEvent, APIGatewayProxyResult } from "aws-lambda";
 import { getContract, getSigner } from "../utils/EthersHelper";
 import { AvatarAbi } from "../abis";
-import TokenService from "../services/TokenService";
 import PgConn from "../database/Pg";
-import NftPoolService from "../services/NftPoolService";
-import { TOTAL_NFT_AMOUNT } from "../constants";
-import { POOL_TYPE } from "../types";
+import PoolService from "../services/PoolService";
+import AvatarService from "../services/AvatarService";
+import SoulboundService from "../services/SoulboundService";
 
 export const reveal = async (
     event: APIGatewayProxyEvent,
 ): Promise<APIGatewayProxyResult> => {
     // get token id & pool type from api url
     const tokenId = Number(event.queryStringParameters!.tokenId);
-    const poolType = Number(event.queryStringParameters!.poolType) as POOL_TYPE;
 
     console.log("reveal tokenId : ", tokenId);
 
@@ -21,22 +19,19 @@ export const reveal = async (
     const pgConn = new PgConn();
     await pgConn.init();
 
-    // create token service
-    const tokenService = new TokenService(pgConn);
-
     try {
         const signer = getSigner();
         const contract = getContract(signer, AvatarAbi);
 
-        // get chainlink vrf
-        const seed = await contract.randomSeedMetadata();
-        const nftPoolService = new NftPoolService(
-            seed,
-            TOTAL_NFT_AMOUNT,
-            tokenService,
-        );
+        const avatarService = new AvatarService(pgConn, contract);
+        const soulboundService = new SoulboundService(pgConn);
+        const poolService = new PoolService(avatarService, soulboundService);
 
-        await nftPoolService.revealTokenId(poolType, tokenId);
+        const imageId = await poolService.revealImage(tokenId);
+
+        await pgConn.destroy();
+
+        console.log(`Token Id: ${tokenId}, Revealed Imaged: ${imageId}`);
 
         return {
             statusCode: 200,

@@ -7,6 +7,6 @@ export enum POOL_TYPE {
 }
 
 export type Pool = {
-    type: POOL_TYPE;
-    tokens: Array<number>;
+    startIdx: bigint;
+    size: bigint;
 };

@@ -16,13 +16,15 @@ export default class SoulboundService {
         this.client = pgConn.getClient();
     }
 
+    // TODO: sould write a sql script to insert
+    // all soulbound data into db in advance
     async createSoulbound(
         tokenId: number,
         type: BlindBoxType,
     ): Promise<boolean> {
         const soulboundFromDb = await this.client.query(
             `
-                  insert into soul_bounds (token_id, type) values ($1, $2)
+                  insert into soulbounds (token_id, type) values ($1, $2)
               `,
             [tokenId, type],
         );
@@ -34,16 +36,31 @@ export default class SoulboundService {
         return true;
     }
 
-    async getSoulboundById(tokenId: number): Promise<Metadata | never> {
-        const soulboundFromDb = await this.client.query(
-            `
-                  select token_id, type from soul_bounds where token_id = $1 
-              `,
-            [tokenId],
-        );
+    async getMetadataById(tokenId: number): Promise<Metadata | never> {
+        const type = await this.getBlindBoxTypeById(tokenId);
+        const metadata = await this.getMetadataByType(type);
+        return metadata;
+    }
 
-        const type = Number(soulboundFromDb.rows[1]) as BlindBoxType;
+    async getBlindBoxTypeById(tokenId: number): Promise<BlindBoxType> {
+        let type: BlindBoxType
 
+        if (tokenId == 0) {
+            type = BlindBoxType.The;
+        } else {
+            const soulboundFromDb = await this.client.query(
+                `
+                    select type from soulbounds where token_id = $1 
+                `,
+                [tokenId],
+            );
+            type = Number(soulboundFromDb.rows[0]) as BlindBoxType
+        }
+
+        return type;
+    }
+
+    async getMetadataByType(type: BlindBoxType): Promise<Metadata | never> {
         let metadata: Metadata;
 
         switch (type) {
