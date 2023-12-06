@@ -22,7 +22,7 @@ export default class AvatarService {
     async createAvatar(tokenId: number, imageId: number): Promise<boolean> {
         const tokenFromDb = await this.client.query(
             `
-                  insert into avatars (token_id, image_id) values ($1, $2)
+                  insert into avatars (token_id, revealed_id) values ($1, $2)
               `,
             [tokenId, imageId],
         );
@@ -37,19 +37,19 @@ export default class AvatarService {
     async getAvatarById(tokenId: number): Promise<Avatar> {
         const tokenFromDb = await this.client.query(
             `
-                  select image_id, from avatars where token_id = $1 
+                  select revealed_id, from avatars where token_id = $1 
               `,
             [tokenId],
         );
 
         let token: Avatar = {
             tokenId: tokenId,
-            imageId: undefined,
+            revealed: undefined,
         };
 
         // the nft is revealed
         if (tokenFromDb.rows.length != 0) {
-            token.imageId = Number(tokenFromDb.rows[0]);
+            token.revealed = Number(tokenFromDb.rows[0]);
         }
 
         return token;
@@ -57,13 +57,13 @@ export default class AvatarService {
 
     // if imageId exists in database,
     // then the image is revealed
-    async isRevealed(imageId: bigint): Promise<boolean> {
+    async isRevealed(revealed_id: bigint): Promise<boolean> {
         const count = Number(
             await this.client.query(
                 `
-                  select count(*), from avatars where image_id = $1 
+                  select count(*), from avatars where revealed_id = $1 
               `,
-                [Number(imageId)],
+                [Number(revealed_id)],
             ),
         );
 

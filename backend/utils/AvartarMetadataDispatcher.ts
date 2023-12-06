@@ -10,7 +10,7 @@ export async function getMetadataByToken(
 ): Promise<Metadata | never> {
     let metadata: Metadata;
 
-    if (avatar.imageId == undefined) {
+    if (avatar.revealed == undefined) {
         // the nft is not revealed yet
         const soulboundId = await avatarService.getSoulboundIdById(
             avatar.tokenId,
@@ -20,11 +20,10 @@ export async function getMetadataByToken(
         // revealed metadata
         metadata = JSON.parse(
             fs.readFileSync(
-                `../metadata/avatar/${avatar.tokenId}.json`,
+                `../metadata/avatar/${avatar.revealed}.json`,
                 "utf-8",
             ),
         );
-        metadata.image = `${process.env.CID_PREFIX}${avatar.imageId}.png`;
     }
 
     return metadata;

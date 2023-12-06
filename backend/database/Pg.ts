@@ -31,7 +31,7 @@ export default class PgConn {
                 id serial not null PRIMARY KEY, 
                 created TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
                 token_id INT not null, 
-                image_id INT not null
+                revealed_id INT not null
             );
         `);
 

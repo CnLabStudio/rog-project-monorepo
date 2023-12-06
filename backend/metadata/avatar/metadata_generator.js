@@ -24,6 +24,7 @@ const generateMetadata = () => {
         );
 
         metadata.name = metadata.name + ` #${i}`;
+        metadata.image = `ipfs://QmSWQH8ShTHxju36SnqiKg5svHULQp8fpeX7GmMekJDf6a/${i}.png`
 
         fs.writeFileSync(
             path.join(__dirname, `./${i}.json`),

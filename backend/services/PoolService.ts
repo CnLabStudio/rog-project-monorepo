@@ -65,26 +65,26 @@ export default class PoolService {
         // seed is u256, need to convert bigint to do the operation
         // using number to do it will occur overflow error
         let offset = (this.seed + BigInt(avatarId)) % pool.size;
-        let imageId = pool.startIdx + offset;
-        let isRevealed = await this.avatarService.isRevealed(imageId);
+        let revealedId = pool.startIdx + offset;
+        let isRevealed = await this.avatarService.isRevealed(revealedId);
 
         // find the image id which is not revealed yet
         while (isRevealed) {
             offset = (offset + 1n) % pool.size;
-            imageId = pool.startIdx + offset;
-            isRevealed = await this.avatarService.isRevealed(imageId);
+            revealedId = pool.startIdx + offset;
+            isRevealed = await this.avatarService.isRevealed(revealedId);
         }
 
         // save into the db
         const insertResult = await this.avatarService.createAvatar(
             avatarId,
-            Number(imageId),
+            Number(revealedId),
         );
 
         if (!insertResult) {
             throw new Error("Reveal nft failed");
         }
 
-        return Number(imageId);
+        return Number(revealedId);
     }
 }
