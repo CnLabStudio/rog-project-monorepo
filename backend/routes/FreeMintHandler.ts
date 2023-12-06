@@ -5,6 +5,7 @@ import { getContract, getSigner } from "../utils/EthersHelper";
 import { isValid } from "../utils/TokenValidator";
 import UserService from "../services/UserService";
 import { FreeMintAbi } from "../abis";
+import { FREE_MINT_ADDRESS } from "../constants";
 
 export const mint = async (
     event: APIGatewayProxyEvent,
@@ -45,7 +46,7 @@ export const mint = async (
 
     try {
         const signer = getSigner();
-        const contract = getContract(signer, FreeMintAbi);
+        const contract = getContract(signer, FREE_MINT_ADDRESS, FreeMintAbi);
 
         // airdrop nfts to the given address
         const tx = await contract.airdropInPair(

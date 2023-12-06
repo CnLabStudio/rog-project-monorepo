@@ -6,6 +6,7 @@ import { getContract, getSigner } from "../utils/EthersHelper";
 import { AvatarAbi } from "../abis";
 import AvatarService from "../services/AvatarService";
 import SoulboundService from "../services/SoulboundService";
+import { AVATAR_ADDRESS } from "../constants";
 
 export const metadata = async (
     event: APIGatewayProxyEvent,
@@ -21,7 +22,7 @@ export const metadata = async (
 
     try {
         const signer = getSigner();
-        const contract = getContract(signer, AvatarAbi);
+        const contract = getContract(signer, AVATAR_ADDRESS, AvatarAbi);
 
         const avatarService = new AvatarService(pgConn, contract);
         const soulboundService = new SoulboundService(pgConn);
