@@ -53,22 +53,22 @@ export default class PoolService {
     }
 
     // reveal the avatar tokenId will bind with
-    // the given imageId
-    async revealImage(avatarId: number): Promise<number | never> {
+    // the given revealedId
+    async revealNft(avatarId: number): Promise<number | never> {
         const soulboundId =
             await this.avatarService.getSoulboundIdById(avatarId);
         const type =
             await this.soulboundService.getBlindBoxTypeById(soulboundId);
         const pool = this.getPoolByType(type);
 
-        // get the imageId
+        // get the revealedId
         // seed is u256, need to convert bigint to do the operation
         // using number to do it will occur overflow error
         let offset = (this.seed + BigInt(avatarId)) % pool.size;
         let revealedId = pool.startIdx + offset;
         let isRevealed = await this.avatarService.isRevealed(revealedId);
 
-        // find the image id which is not revealed yet
+        // find the revealedId which is not revealed yet
         while (isRevealed) {
             offset = (offset + 1n) % pool.size;
             revealedId = pool.startIdx + offset;

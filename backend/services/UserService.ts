@@ -35,7 +35,7 @@ export default class UserService {
             [this.lowerAddressCase(address)],
         );
 
-        if (userFromDb.rows.length == 0) {
+        if (userFromDb.rowCount == 0) {
             return false;
         }
 

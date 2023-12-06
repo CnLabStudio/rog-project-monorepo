@@ -28,11 +28,11 @@ export const reveal = async (
         const soulboundService = new SoulboundService(pgConn);
         const poolService = new PoolService(avatarService, soulboundService);
 
-        const imageId = await poolService.revealImage(tokenId);
+        const revealedId = await poolService.revealNft(tokenId);
 
         await pgConn.destroy();
 
-        console.log(`Token Id: ${tokenId}, Revealed Imaged: ${imageId}`);
+        console.log(`Token Id: ${tokenId}, Revealed Nft: ${revealedId}`);
 
         return {
             statusCode: 200,

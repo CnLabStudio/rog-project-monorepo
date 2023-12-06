@@ -16,26 +16,6 @@ export default class SoulboundService {
         this.client = pgConn.getClient();
     }
 
-    // TODO: sould write a sql script to insert
-    // all soulbound data into db in advance
-    async createSoulbound(
-        tokenId: number,
-        type: BlindBoxType,
-    ): Promise<boolean> {
-        const soulboundFromDb = await this.client.query(
-            `
-                  insert into soulbounds (token_id, type) values ($1, $2)
-              `,
-            [tokenId, type],
-        );
-
-        if (soulboundFromDb.rowCount != 1) {
-            return false;
-        }
-
-        return true;
-    }
-
     async getMetadataById(tokenId: number): Promise<Metadata | never> {
         const type = await this.getBlindBoxTypeById(tokenId);
         const metadata = await this.getMetadataByType(type);
@@ -54,7 +34,7 @@ export default class SoulboundService {
                 `,
                 [tokenId],
             );
-            type = Number(soulboundFromDb.rows[0]) as BlindBoxType;
+            type = Number(soulboundFromDb.rows[0].type) as BlindBoxType;
         }
 
         return type;

@@ -19,12 +19,12 @@ export default class AvatarService {
         return souldboundId;
     }
 
-    async createAvatar(tokenId: number, imageId: number): Promise<boolean> {
+    async createAvatar(tokenId: number, revealedId: number): Promise<boolean> {
         const tokenFromDb = await this.client.query(
             `
                   insert into avatars (token_id, revealed_id) values ($1, $2)
               `,
-            [tokenId, imageId],
+            [tokenId, revealedId],
         );
 
         if (tokenFromDb.rowCount != 1) {
@@ -48,24 +48,23 @@ export default class AvatarService {
         };
 
         // the nft is revealed
-        if (tokenFromDb.rows.length != 0) {
-            token.revealed = Number(tokenFromDb.rows[0]);
+        if (tokenFromDb.rowCount != 0) {
+            token.revealed = Number(tokenFromDb.rows[0].revealed_id);
         }
 
         return token;
     }
 
-    // if imageId exists in database,
-    // then the image is revealed
+    // if revealed_id exists in database,
+    // then the metadata is revealed
     async isRevealed(revealed_id: bigint): Promise<boolean> {
-        const count = Number(
-            await this.client.query(
-                `
-                  select count(*), from avatars where revealed_id = $1 
+        const res = await this.client.query(
+            `
+                  select count(*) from avatars where revealed_id = $1 
               `,
-                [Number(revealed_id)],
-            ),
+            [Number(revealed_id)],
         );
+        const count = Number(res.rows[0].count);
 
         return count == 0 ? false : true;
     }
