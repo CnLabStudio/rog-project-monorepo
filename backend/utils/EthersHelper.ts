@@ -5,6 +5,10 @@ export function getSigner(): Signer {
     return new Wallet(process.env.PRIVATE_KEY!, provider);
 }
 
-export function getContract(signer: Signer, address: string, abi: any): Contract {
+export function getContract(
+    signer: Signer,
+    address: string,
+    abi: any,
+): Contract {
     return new Contract(address, abi, signer);
 }
