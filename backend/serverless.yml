@@ -15,7 +15,6 @@ provider:
     httpApi:
         cors: true
 
-# TODO: add avatar metadata handler & avatar reveal handler
 functions:
     freemint:
         handler: routes/FreeMintHandler.mint
@@ -29,6 +28,12 @@ functions:
             - httpApi:
                   path: /metadata/{tokenId}
                   method: get
+    reveal:
+        handler: routes/AvatarRevealHandler.reveal
+        events:
+            - httpApi:
+                  path: /reveal/{tokenId}
+                  method: post
 
 plugins:
     - serverless-plugin-typescript

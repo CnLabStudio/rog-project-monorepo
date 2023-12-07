@@ -1,5 +1,6 @@
 import { Avatar, Metadata } from "../types";
 import * as fs from "fs";
+import * as path from "path";
 import SoulboundService from "../services/SoulboundService";
 import AvatarService from "../services/AvatarService";
 
@@ -20,7 +21,7 @@ export async function getMetadataByToken(
         // revealed metadata
         metadata = JSON.parse(
             fs.readFileSync(
-                `../metadata/avatar/${avatar.revealed}.json`,
+                path.join(__dirname, `metadata/avatar/${avatar.revealed}.json`),
                 "utf-8",
             ),
         );

@@ -22,6 +22,10 @@ export default class SoulboundService {
         return metadata;
     }
 
+    // can find the soulbound nft from avatar contract
+    // by method "avatarToSoulbound", if the corresponding
+    // soulbound token id is 0, which means
+    // the blindbox is from public sale
     async getBlindBoxTypeById(tokenId: number): Promise<BlindBoxType> {
         let type: BlindBoxType;
 
@@ -34,7 +38,7 @@ export default class SoulboundService {
                 `,
                 [tokenId],
             );
-            type = Number(soulboundFromDb.rows[0].type) as BlindBoxType;
+            type = soulboundFromDb.rows[0].type as BlindBoxType;
         }
 
         return type;

@@ -12,6 +12,11 @@ export default class AvatarService {
         this.contract = contract;
     }
 
+    async enableReveal(): Promise<boolean | never> {
+        const enable = await this.contract.revealed();
+        return enable;
+    }
+
     // get the soulboundId so that soulbound service
     // can find the corresponding blindbox type
     async getSoulboundIdById(avatarId: number): Promise<number | never> {
@@ -49,7 +54,7 @@ export default class AvatarService {
 
         // the nft is revealed
         if (tokenFromDb.rowCount != 0) {
-            token.revealed = Number(tokenFromDb.rows[0].revealed_id);
+            token.revealed = tokenFromDb.rows[0].revealed_id;
         }
 
         return token;

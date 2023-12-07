@@ -11,8 +11,8 @@ import { AVATAR_ADDRESS } from "../constants";
 export const reveal = async (
     event: APIGatewayProxyEvent,
 ): Promise<APIGatewayProxyResult> => {
-    // get token id & pool type from api url
-    const tokenId = Number(event.queryStringParameters!.tokenId);
+    // get token id from api url
+    const tokenId = Number(event.pathParameters!.tokenId);
 
     console.log("reveal tokenId : ", tokenId);
 

@@ -24,12 +24,12 @@ export default class PoolService {
         this.soulboundService = soulboundService;
     }
 
-    // 1. pool type
-    //    {
-    //      start idx: BigInt,
-    //      size: BigInt
-    //    }
-    // 2. last index = start idx + pool size
+    // pool type
+    // {
+    //   start idx: BigInt,
+    //   size: BigInt
+    // }
+    // last index = start idx + pool size
     private getPoolByType(type: BlindBoxType): Pool {
         let pool: Pool;
         switch (type) {
@@ -55,6 +55,12 @@ export default class PoolService {
     // reveal the avatar tokenId will bind with
     // the given revealedId
     async revealNft(avatarId: number): Promise<number | never> {
+        // check the contract the stage is on reveal or not
+        const enableReveal = this.avatarService.enableReveal();
+        if (!enableReveal) {
+            throw new Error("The reveal stage is not available");
+        }
+
         const soulboundId =
             await this.avatarService.getSoulboundIdById(avatarId);
         const type =

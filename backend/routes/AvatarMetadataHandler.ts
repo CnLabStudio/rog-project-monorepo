@@ -11,7 +11,7 @@ import { AVATAR_ADDRESS } from "../constants";
 export const metadata = async (
     event: APIGatewayProxyEvent,
 ): Promise<APIGatewayProxyResult> => {
-    // get token id & addr from api url
+    // get token id from api url
     const tokenId = Number(event.pathParameters!.tokenId);
 
     console.log("query token id: ", tokenId);
