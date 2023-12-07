@@ -4,6 +4,7 @@ import { ethers } from 'hardhat'
 async function main() {
   let addrs = await ethers.getSigners()
 
+  /*
   console.log('Deploying contracts with the account:', addrs[0].address)
   console.log(
     'Account balance:',
@@ -20,6 +21,7 @@ async function main() {
   )
   await phaseOneFreeMint.waitForDeployment()
   console.log('Contract address:', await phaseOneFreeMint.getAddress())
+  */
   /*
   const PhaseTwoSoulBound = await ethers.getContractFactory(
     'PhaseTwoSoulBound',
@@ -33,7 +35,7 @@ async function main() {
   await phaseTwoSoulBound.waitForDeployment()
   console.log('Contract address:', await phaseTwoSoulBound.getAddress())
   */
-  /*
+
   const PhaseThreeAvatar = await ethers.getContractFactory(
     'PhaseThreeAvatar',
     addrs[0]
@@ -52,7 +54,6 @@ async function main() {
   )
   await phaseThreeAvatar.waitForDeployment()
   console.log('Contract address:', await phaseThreeAvatar.getAddress())
-  */
 }
 
 // We recommend this pattern to be able to use async/await everywhere

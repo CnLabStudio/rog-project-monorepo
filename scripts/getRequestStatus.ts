@@ -2,9 +2,9 @@ import 'dotenv/config'
 import { ethers } from 'hardhat'
 import { PhaseThreeAvatar__factory } from '../build/typechain'
 import { getGasPrice } from './utils'
+import * as constants from './constants'
 
 async function main() {
-  const avatarAddr = '0x1b35CE136036e416016fE4bF316fFA2D796cd2bC'
   let addrs = await ethers.getSigners()
 
   console.log('Deploying contracts with the account:', addrs[0].address)
@@ -14,7 +14,7 @@ async function main() {
   )
 
   const phaseThreeAvatar = PhaseThreeAvatar__factory.connect(
-    avatarAddr,
+    constants.phaseThressAvatarAddr,
     addrs[0]
   )
   console.log('Contract address:', await phaseThreeAvatar.getAddress())
