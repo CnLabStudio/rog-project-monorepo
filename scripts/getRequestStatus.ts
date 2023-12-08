@@ -14,7 +14,7 @@ async function main() {
   )
 
   const phaseThreeAvatar = PhaseThreeAvatar__factory.connect(
-    constants.phaseThressAvatarAddr,
+    constants.phaseThreeAvatarAddr,
     addrs[0]
   )
   console.log('Contract address:', await phaseThreeAvatar.getAddress())

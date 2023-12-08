@@ -3,6 +3,7 @@ import { ethers } from 'hardhat'
 import {
   PhaseOneFreeMint__factory,
   PhaseTwoSoulBound__factory,
+  PhaseThreeAvatar__factory,
 } from '../build/typechain'
 import * as constants from './constants'
 
@@ -28,6 +29,7 @@ async function main() {
   QmNhUw4Xv9jj6h2NRqf2fm8nZBNRNzFwDXJ5BLwLWWVKRF
   */
 
+  /*
   const phaseTwoSoulBound = PhaseTwoSoulBound__factory.connect(
     constants.phaseTwoSoulBoundAddr,
     addrs[0]
@@ -37,6 +39,17 @@ async function main() {
   await phaseTwoSoulBound.setURI(
     'ipfs://QmNhUw4Xv9jj6h2NRqf2fm8nZBNRNzFwDXJ5BLwLWWVKRF/',
     '.json'
+  )
+  */
+  const phaseThreeAvatar = PhaseThreeAvatar__factory.connect(
+    constants.phaseThreeAvatarAddr,
+    addrs[0]
+  )
+  console.log('Contract address:', await phaseThreeAvatar.getAddress())
+
+  await phaseThreeAvatar.setURI(
+    'https://vq1a6y8671.execute-api.ap-southeast-1.amazonaws.com/metadata/',
+    ''
   )
 }
 

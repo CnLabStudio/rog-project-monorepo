@@ -19,12 +19,8 @@ async function main() {
   )
   console.log('Contract address:', await phaseThreeAvatar.getAddress())
 
-  const { maxFeePerGas, maxPriorityFeePerGas } = await getGasPrice()
-
-  await phaseThreeAvatar.requestRandomWords({
-    maxFeePerGas,
-    maxPriorityFeePerGas,
-  })
+  const tokenURI = await phaseThreeAvatar.tokenURI(0)
+  console.log(tokenURI)
 }
 
 main()
