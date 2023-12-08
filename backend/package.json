@@ -3,7 +3,6 @@
     "version": "1.0.0",
     "description": "",
     "main": "index.js",
-    "type": "module",
     "scripts": {
         "test": "jest",
         "lint": "prettier .",
@@ -20,7 +19,7 @@
     },
     "devDependencies": {
         "@types/aws-lambda": "^8.10.125",
-        "@types/jest": "^29.5.9",
+        "@types/jest": "^29.5.11",
         "@types/node": "^20.8.8",
         "@types/pg": "^8.10.7",
         "dotenv": "^16.3.1",

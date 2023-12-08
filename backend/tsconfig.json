@@ -8,5 +8,24 @@
         "skipLibCheck": true,
         "resolveJsonModule": true,
         "lib": ["es6", "esnext.bigint"]
-    }
+    },
+    "include": [
+        "abis/*",
+        "database/*",
+        "metadata/**/*",
+        "metadata/avatar/*.json",
+        "routes/*",
+        "services/*",
+        "types/*",
+        "utils/*"
+    ],
+    "files": ["constants.ts"],
+    "exclude": [
+        "node_modules",
+        "test/**/*",
+        "database/*.js",
+        "database/*.xlsx",
+        "metadata/**/*.js"
+    ],
+    "types": ["jest"]
 }

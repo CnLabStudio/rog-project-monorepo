@@ -42,7 +42,7 @@ export default class AvatarService {
     async getAvatarById(tokenId: number): Promise<Avatar> {
         const tokenFromDb = await this.client.query(
             `
-                  select revealed_id, from avatars where token_id = $1 
+                  select revealed_id from avatars where token_id = $1 
               `,
             [tokenId],
         );

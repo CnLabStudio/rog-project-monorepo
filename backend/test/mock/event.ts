@@ -10,7 +10,7 @@ export const eventJSON: APIGatewayProxyEvent = {
         tokenId: "1",
     },
     pathParameters: {
-        tokenId: "1",
+        tokenId: "0",
     },
     stageVariables: {
         baz: "qux",

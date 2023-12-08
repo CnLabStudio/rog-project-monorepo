@@ -21,7 +21,10 @@ export async function getMetadataByToken(
         // revealed metadata
         metadata = JSON.parse(
             fs.readFileSync(
-                path.join(__dirname, `metadata/avatar/${avatar.revealed}.json`),
+                path.resolve(
+                    __dirname,
+                    `../metadata/avatar/${avatar.revealed}.json`,
+                ),
                 "utf-8",
             ),
         );
