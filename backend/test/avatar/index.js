@@ -18,7 +18,7 @@ const executeCli = async () => {
     switch (command) {
         case "metadata":
             const tokens = await getTokens(avatar);
-            displayMetadata(avatar, tokens);
+            await displayMetadata(avatar, tokens);
             break;
         case "mintblindbox":
             await mintBySoulboundHolder(soulbound, avatar);
