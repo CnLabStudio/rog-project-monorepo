@@ -49,8 +49,6 @@ contract PhaseThreeAvatar is ERC721AQueryable, ERC2981, VRFV2WrapperConsumerBase
     string public uriPrefix;
     string public uriSuffix;
 
-    /// @dev soulbound token holder => soulbound token id => whether the soulbound token holder has minted the token
-    mapping(address => mapping(uint256 => bool)) public soulboundMinted;
     /// @dev avatar token id => soulbound token id
     mapping(uint256 => uint256) public avatarToSoulbound;
 
@@ -181,14 +179,10 @@ contract PhaseThreeAvatar is ERC721AQueryable, ERC2981, VRFV2WrapperConsumerBase
         if (block.timestamp < soulboundMintTime) {
             revert InvalidTimestamp();
         }
-        if (soulboundMinted[msg.sender][_tokenId]) {
-            revert InvalidInput();
-        }
         if (IERC721(soulboundAddress).ownerOf(_tokenId) != msg.sender) {
             revert InvalidInput();
         }
 
-        soulboundMinted[msg.sender][_tokenId] = true;
         avatarToSoulbound[totalSupply()] = _tokenId;
 
         _safeMint(msg.sender, 1);
