@@ -14,7 +14,7 @@ export const mintPublicBlindBox = async (contract) => {
     await tx.wait();
 
     const tokens = await getTokens(contract);
-    const latestIdx = tokens.length - 1
+    const latestIdx = tokens.length - 1;
     console.log("mint succeed, here's your avatar token:");
     await displayMetadata(contract, [tokens[latestIdx]]);
 };
@@ -24,7 +24,7 @@ export const mintBySoulboundHolder = async (soulbound, avatar) => {
     let tokens = await getUnusedSoulboundTokens(soulbound, avatar);
     if (tokens.length <= 0) {
         console.log("you are not soulbound holder");
-        return
+        return;
     }
     console.log("below is the list of available soulbound to redeem:");
     await displayMetadata(soulbound, tokens);

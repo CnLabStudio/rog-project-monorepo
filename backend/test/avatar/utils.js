@@ -25,8 +25,9 @@ export const mappingAvatarsToSoulbounds = async (contract) => {
     const soulboundTokens = [];
     for (let i = 0; i < avatarTokens.length; i++) {
         const avatarToken = avatarTokens[i];
-        const soulboundTokenBigint = await contract.avatarToSoulbound(avatarToken);
-        const soulboundToken = Number(soulboundTokenBigint)
+        const soulboundTokenBigint =
+            await contract.avatarToSoulbound(avatarToken);
+        const soulboundToken = Number(soulboundTokenBigint);
         if (soulboundToken > 0) {
             soulboundTokens.push();
         }
@@ -61,7 +62,7 @@ export const getUnrevealedAvatars = async (avatar) => {
     for (let i = 0; i < tokens.length; i++) {
         const token = tokens[i];
         const metadata = await getMetadataById(avatar, token);
-        
+
         if (metadata.image.includes("blind")) {
             unrevealed.push({
                 tokenId: token,
