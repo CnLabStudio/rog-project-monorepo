@@ -60,9 +60,21 @@ export default class AvatarService {
         return token;
     }
 
+    async isAvatarRevealed(avatar_id: number): Promise<boolean> {
+        const res = await this.client.query(
+            `
+                select count(*) from avatars where token_id = $1
+            `,
+            [avatar_id],
+        );
+        const count = Number(res.rows[0].count);
+
+        return count == 0 ? false : true;
+    }
+
     // if revealed_id exists in database,
     // then the metadata is revealed
-    async isRevealed(revealed_id: bigint): Promise<boolean> {
+    async isMetadataRevealed(revealed_id: bigint): Promise<boolean> {
         const res = await this.client.query(
             `
                   select count(*) from avatars where revealed_id = $1 

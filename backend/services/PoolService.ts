@@ -61,6 +61,12 @@ export default class PoolService {
             throw new Error("The reveal stage is not available");
         }
 
+        // check the avatar is revealed or not
+        let isRevealed = await this.avatarService.isAvatarRevealed(avatarId);
+        if (isRevealed) {
+            throw new Error("This nft is revealed");
+        }
+
         const soulboundId =
             await this.avatarService.getSoulboundIdById(avatarId);
         const type =
@@ -72,13 +78,13 @@ export default class PoolService {
         // using number to do it will occur overflow error
         let offset = (this.seed + BigInt(avatarId)) % pool.size;
         let revealedId = pool.startIdx + offset;
-        let isRevealed = await this.avatarService.isRevealed(revealedId);
+        isRevealed = await this.avatarService.isMetadataRevealed(revealedId);
 
         // find the revealedId which is not revealed yet
         while (isRevealed) {
             offset = (offset + 1n) % pool.size;
             revealedId = pool.startIdx + offset;
-            isRevealed = await this.avatarService.isRevealed(revealedId);
+            isRevealed = await this.avatarService.isMetadataRevealed(revealedId);
         }
 
         // save into the db
