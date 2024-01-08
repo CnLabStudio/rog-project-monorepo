@@ -1,5 +1,6 @@
 import 'dotenv/config'
 import { ethers } from 'hardhat'
+import { getGasPrice } from './utils'
 
 async function main() {
   let addrs = await ethers.getSigners()
@@ -35,6 +36,8 @@ async function main() {
   await phaseTwoSoulBound.waitForDeployment()
   console.log('Contract address:', await phaseTwoSoulBound.getAddress())
   */
+
+  const { maxFeePerGas, maxPriorityFeePerGas } = await getGasPrice()
 
   const PhaseThreeAvatar = await ethers.getContractFactory(
     'PhaseThreeAvatar',

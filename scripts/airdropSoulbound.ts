@@ -18,12 +18,15 @@ async function main() {
   )
   console.log('Contract address:', await phaseTwoSoulBound.getAddress())
 
-  const airdropList = ['0xB4993eD5511Fef95b36154e4192994520c1352BF']
+  const airdropList = [
+    '0x45F571d30157a2E548A9a5789F69558aC56955dA',
+    '0xad7019432DeE3ee6C63c345A84b18337C7AC6298',
+  ]
 
   for (const address of airdropList) {
     console.log('Minting to address:', address)
 
-    await phaseTwoSoulBound.mintGiveawayTokens(address, 20)
+    await phaseTwoSoulBound.mintGiveawayTokens(address, 1)
   }
 }
 
