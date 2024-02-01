@@ -2,7 +2,6 @@
 import { APIGatewayProxyEvent, APIGatewayProxyResult } from "aws-lambda";
 import { getContract, getSigner } from "../utils/EthersHelper";
 import { AvatarAbi } from "../abis";
-import PgConn from "../database/Pg";
 import PoolService from "../services/PoolService";
 import AvatarService from "../services/AvatarService";
 import SoulboundService from "../services/SoulboundService";
@@ -16,21 +15,15 @@ export const reveal = async (
 
     console.log("reveal tokenId : ", tokenId);
 
-    // connect postgres
-    const pgConn = new PgConn();
-    await pgConn.init();
-
     try {
         const signer = getSigner();
         const contract = getContract(signer, AVATAR_ADDRESS, AvatarAbi);
 
-        const avatarService = new AvatarService(pgConn, contract);
-        const soulboundService = new SoulboundService(pgConn);
+        const avatarService = new AvatarService(contract);
+        const soulboundService = new SoulboundService();
         const poolService = new PoolService(avatarService, soulboundService);
 
         const revealedId = await poolService.revealNft(tokenId);
-
-        await pgConn.destroy();
 
         console.log(`Token Id: ${tokenId}, Revealed Nft: ${revealedId}`);
 

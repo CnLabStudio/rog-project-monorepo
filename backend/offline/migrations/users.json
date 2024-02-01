@@ -1,0 +1,21 @@
+{
+    "Table": {
+        "TableName": "users-dev",
+        "KeySchema": [
+            {
+                "AttributeName": "address",
+                "KeyType": "HASH"
+            }
+        ],
+        "AttributeDefinitions": [
+            {
+                "AttributeName": "address",
+                "AttributeType": "S"
+            }
+        ],
+        "ProvisionedThroughput": {
+            "ReadCapacityUnits": 1,
+            "WriteCapacityUnits": 1
+        }
+    }
+}

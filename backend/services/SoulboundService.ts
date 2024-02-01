@@ -1,5 +1,3 @@
-import { Client } from "pg";
-import PgConn from "../database/Pg";
 import { BlindBoxType, Metadata } from "../types";
 import {
     BlackAether,
@@ -8,15 +6,19 @@ import {
     RedAether,
     TheAether,
 } from "../metadata";
+import { DocumentClient } from "aws-sdk/clients/dynamodb";
+import { client } from "../database/DynamoDB";
 
 export default class SoulboundService {
-    private client: Client;
+    private tableName: string;
+    private client: DocumentClient;
 
-    constructor(pgConn: PgConn) {
-        this.client = pgConn.getClient();
+    constructor() {
+        this.tableName = process.env.SOULBOUND_TABLE!;
+        this.client = client;
     }
 
-    async getMetadataById(tokenId: number): Promise<Metadata | never> {
+    async getMetadataById(tokenId: number): Promise<Metadata> {
         const type = await this.getBlindBoxTypeById(tokenId);
         const metadata = await this.getMetadataByType(type);
         return metadata;
@@ -32,19 +34,21 @@ export default class SoulboundService {
         if (tokenId == 0) {
             type = BlindBoxType.The;
         } else {
-            const soulboundFromDb = await this.client.query(
-                `
-                    select type from soulbounds where token_id = $1 
-                `,
-                [tokenId],
-            );
-            type = soulboundFromDb.rows[0].type as BlindBoxType;
+            const params = {
+                TableName: this.tableName,
+                Key: {
+                    tokenId: tokenId,
+                },
+            }
+            
+            const res = await this.client.get(params).promise();
+            type = res.Item!.type as BlindBoxType;
         }
 
         return type;
     }
 
-    async getMetadataByType(type: BlindBoxType): Promise<Metadata | never> {
+    async getMetadataByType(type: BlindBoxType): Promise<Metadata> {
         let metadata: Metadata;
 
         switch (type) {

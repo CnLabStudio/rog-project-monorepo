@@ -1,0 +1,21 @@
+{
+    "Table": {
+        "TableName": "soulbounds-dev",
+        "KeySchema": [
+            {
+                "AttributeName": "tokenId",
+                "KeyType": "HASH"
+            }
+        ],
+        "AttributeDefinitions": [
+            {
+                "AttributeName": "tokenId",
+                "AttributeType": "N"
+            }
+        ],
+        "ProvisionedThroughput": {
+            "ReadCapacityUnits": 1,
+            "WriteCapacityUnits": 1
+        }
+    }
+}

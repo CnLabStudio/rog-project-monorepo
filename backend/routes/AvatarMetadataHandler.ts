@@ -1,7 +1,6 @@
 "use strict";
 import { APIGatewayProxyEvent, APIGatewayProxyResult } from "aws-lambda";
 import { getMetadataByToken } from "../utils/AvartarMetadataDispatcher";
-import PgConn from "../database/Pg";
 import { getContract, getSigner } from "../utils/EthersHelper";
 import { AvatarAbi } from "../abis";
 import AvatarService from "../services/AvatarService";
@@ -16,16 +15,12 @@ export const metadata = async (
 
     console.log("query token id: ", tokenId);
 
-    // connect postgres
-    const pgConn = new PgConn();
-    await pgConn.init();
-
     try {
         const signer = getSigner();
         const contract = getContract(signer, AVATAR_ADDRESS, AvatarAbi);
 
-        const avatarService = new AvatarService(pgConn, contract);
-        const soulboundService = new SoulboundService(pgConn);
+        const avatarService = new AvatarService(contract);
+        const soulboundService = new SoulboundService();
 
         const token = await avatarService.getAvatarById(tokenId);
 
@@ -36,8 +31,6 @@ export const metadata = async (
             avatarService,
             soulboundService,
         );
-
-        await pgConn.destroy();
 
         return {
             statusCode: 200,

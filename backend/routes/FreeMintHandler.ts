@@ -1,6 +1,5 @@
 "use strict";
 import { APIGatewayProxyEvent, APIGatewayProxyResult } from "aws-lambda";
-import PgConn from "../database/Pg";
 import { getContract, getSigner } from "../utils/EthersHelper";
 import { isValid } from "../utils/TokenValidator";
 import UserService from "../services/UserService";
@@ -19,12 +18,8 @@ export const mint = async (
     console.log("second free mint tokenId : ", secondTokenId);
     console.log("user eth address : ", address);
 
-    // connect postgres
-    const pgConn = new PgConn();
-    await pgConn.init();
-
     // create user service
-    const userService = new UserService(pgConn);
+    const userService = new UserService();
 
     // fetch user data
     const userMinted = await userService.isUserMinted(address);
@@ -57,14 +52,7 @@ export const mint = async (
         await tx.wait();
 
         // save user minted record into db
-        const insertResult = await userService.createUser(address);
-
-        // disconnect postgres
-        await pgConn.destroy();
-
-        if (!insertResult) {
-            throw new Error("Mint nft failed");
-        }
+        await userService.createUser(address);
 
         return {
             statusCode: 200,

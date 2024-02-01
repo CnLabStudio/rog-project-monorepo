@@ -51,7 +51,7 @@ export const revealAvatar = async (contract) => {
     );
 
     await fetch(
-        `https://vq1a6y8671.execute-api.ap-southeast-1.amazonaws.com/reveal/${tokenId}`,
+        `http://localhost:3000/reveal/${tokenId}`,
         {
             method: "POST",
             body: "application/json",

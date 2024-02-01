@@ -4,6 +4,10 @@ jspm_packages
 
 # Serverless directories
 .serverless
+.build
 
 # excel
 *.xlsx
+
+# docker
+docker

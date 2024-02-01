@@ -39,7 +39,9 @@ export const mappingAvatarsToSoulbounds = async (contract) => {
 // means that soulbound nft is redeemed
 export const getUnusedSoulboundTokens = async (soulbound, avatar) => {
     const soulboundTokens = await getTokens(soulbound);
+    console.log(soulboundTokens)
     const avatarTokens = await mappingAvatarsToSoulbounds(avatar);
+    console.log(avatarTokens)
     const availableTokens = [];
 
     const n = avatarTokens.length;
@@ -89,7 +91,7 @@ export const displayMetadata = async (contract, tokens) => {
     }
 };
 
-export const getMetadataById = async (contract, tokenId) => {
+export const getMetadataById = async (type, contract, tokenId) => {
     let data;
     switch (type) {
         case "Avatar":

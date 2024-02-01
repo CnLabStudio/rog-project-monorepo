@@ -1,14 +1,16 @@
-import { Client } from "pg";
-import PgConn from "../database/Pg";
 import { Avatar } from "../types";
 import { Contract } from "ethers";
+import { DocumentClient } from "aws-sdk/clients/dynamodb";
+import { client } from "../database/DynamoDB";
 
 export default class AvatarService {
-    private client: Client;
+    private tableName;
+    private client: DocumentClient;
     private contract: Contract;
 
-    constructor(pgConn: PgConn, contract: Contract) {
-        this.client = pgConn.getClient();
+    constructor(contract: Contract) {
+        this.tableName = process.env.AVATAR_TABLE!;
+        this.client = client;
         this.contract = contract;
     }
 
@@ -19,33 +21,34 @@ export default class AvatarService {
 
     // get the soulboundId so that soulbound service
     // can find the corresponding blindbox type
-    async getSoulboundIdById(avatarId: number): Promise<number | never> {
+    async getSoulboundIdById(avatarId: number): Promise<number> {
         const souldboundId = await this.contract.avatarToSoulbound(avatarId);
-        return souldboundId;
+        return Number(souldboundId);
     }
 
-    async createAvatar(tokenId: number, revealedId: number): Promise<boolean> {
-        const tokenFromDb = await this.client.query(
-            `
-                  insert into avatars (token_id, revealed_id) values ($1, $2)
-              `,
-            [tokenId, revealedId],
-        );
-
-        if (tokenFromDb.rowCount != 1) {
-            return false;
+    async createAvatar(tokenId: number, revealedId: number) {
+        const params = {
+            TableName: this.tableName,
+            Item: {
+                tokenId: tokenId,
+                revealed: revealedId,
+                createdAt: new Date().getTime(),
+            },
         }
 
-        return true;
+        await this.client.put(params).promise();
     }
 
     async getAvatarById(tokenId: number): Promise<Avatar> {
-        const tokenFromDb = await this.client.query(
-            `
-                  select revealed_id from avatars where token_id = $1 
-              `,
-            [tokenId],
-        );
+        const params = {
+            TableName: this.tableName,
+            Key: {
+                id: tokenId,
+            },
+        }
+
+        const res = await this.client.get(params).promise();
+        const avatar = res.Item as Avatar;
 
         let token: Avatar = {
             tokenId: tokenId,
@@ -53,21 +56,24 @@ export default class AvatarService {
         };
 
         // the nft is revealed
-        if (tokenFromDb.rowCount != 0) {
-            token.revealed = tokenFromDb.rows[0].revealed_id;
+        if (Object.keys(res).length > 0) {
+            token.revealed = avatar.revealed;
         }
 
         return token;
     }
 
-    async isAvatarRevealed(avatar_id: number): Promise<boolean> {
-        const res = await this.client.query(
-            `
-                select count(*) from avatars where token_id = $1
-            `,
-            [avatar_id],
-        );
-        const count = Number(res.rows[0].count);
+    async isAvatarRevealed(avatarId: number): Promise<boolean> {
+        const params = {
+            TableName: this.tableName,
+            Key: {
+                tokenId: avatarId,
+            },
+            Select: "COUNT",
+        }
+
+        const res = await this.client.scan(params).promise();
+        const count = res.Count;
 
         return count == 0 ? false : true;
     }
@@ -75,13 +81,20 @@ export default class AvatarService {
     // if revealed_id exists in database,
     // then the metadata is revealed
     async isMetadataRevealed(revealed_id: bigint): Promise<boolean> {
-        const res = await this.client.query(
-            `
-                  select count(*) from avatars where revealed_id = $1 
-              `,
-            [Number(revealed_id)],
-        );
-        const count = Number(res.rows[0].count);
+        const params = {
+            TableName: process.env.DYNAMODB_TABLE!,
+            FilterExpression: '#avatar_revealedId = :revealedId',
+            ExpressionAttributeValues: {
+              ':revealedId': Number(revealed_id),
+            },
+            ExpressionAttributeNames: { 
+              "#avatar_revealedId": "revealedId",
+            },
+            Select: "COUNT",
+        };
+
+        const res = await this.client.scan(params).promise();
+        const count = res.Count;
 
         return count == 0 ? false : true;
     }

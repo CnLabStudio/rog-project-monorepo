@@ -21,11 +21,13 @@
     ],
     "files": ["constants.ts"],
     "exclude": [
-        "node_modules",
+        "node_modules/**/*",
+        "offline",
         "test/**/*",
         "database/*.js",
+        "database/docker-compose.yml",
         "database/*.xlsx",
-        "metadata/**/*.js"
+        "metadata/**/*.js",
     ],
     "types": ["jest"]
 }

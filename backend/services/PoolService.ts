@@ -88,14 +88,10 @@ export default class PoolService {
         }
 
         // save into the db
-        const insertResult = await this.avatarService.createAvatar(
+        await this.avatarService.createAvatar(
             avatarId,
             Number(revealedId),
         );
-
-        if (!insertResult) {
-            throw new Error("Reveal nft failed");
-        }
 
         return Number(revealedId);
     }
