@@ -1,33 +1,27 @@
 import ExcelJs from "exceljs";
-import dotenv from "dotenv";
-import pkg from 'aws-sdk';
-const { DynamoDB } = pkg;
-dotenv.config();
-
-let options = {
-    region: 'localhost',
-    endpoint: 'http://0.0.0.0:8000',
-    credentials: {
-      accessKeyId: 'MockAccessKeyId',
-      secretAccessKey: 'MockSecretAccessKey'
-    }
-};
-
-const client = new DynamoDB.DocumentClient(options);
+import { client } from "./DynamoDB";
 
 const importTable = async () => {
     const workbook = new ExcelJs.Workbook();
     await workbook.xlsx.readFile("./database/soulbound.xlsx");
 
     const sheet = workbook.getWorksheet("Soulbound");
+    if (sheet == undefined) {
+        console.log("sheet name Soulbound not found");
+        return;
+    }
 
     const rows = sheet.getRows(2, 40);
+    if (rows == undefined) {
+        console.log("rows not found");
+        return;
+    }
 
     for (let i = 0; i < 40; i++) {
         const row = rows[i];
-        const tokenId = row.values[1];
+        const tokenId = row.getCell(1);
         let type;
-        switch (row.values[2]) {
+        switch (row.getCell(2).value) {
             case "Gold":
                 type = 0;
                 break;

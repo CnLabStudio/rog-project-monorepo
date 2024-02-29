@@ -1,9 +1,5 @@
 import {
-    BLACK_POOL,
-    BLUE_POOL,
-    GOLD_POOL,
-    RED_POOL,
-    THE_POOL,
+    POOLS,
     VRF,
 } from "../constants";
 import { BlindBoxType, Pool } from "../types";
@@ -12,6 +8,7 @@ import AvatarService from "./AvatarService";
 
 export default class PoolService {
     private seed: bigint;
+    private pools: any;
     private avatarService: AvatarService;
     private soulboundService: SoulboundService;
 
@@ -20,6 +17,7 @@ export default class PoolService {
         soulboundService: SoulboundService,
     ) {
         this.seed = VRF;
+        this.pools = POOLS;
         this.avatarService = avatarService;
         this.soulboundService = soulboundService;
     }
@@ -31,30 +29,13 @@ export default class PoolService {
     // }
     // last index = start idx + pool size
     private getPoolByType(type: BlindBoxType): Pool {
-        let pool: Pool;
-        switch (type) {
-            case BlindBoxType.Golden:
-                pool = GOLD_POOL;
-                break;
-            case BlindBoxType.Black:
-                pool = BLACK_POOL;
-                break;
-            case BlindBoxType.Red:
-                pool = RED_POOL;
-                break;
-            case BlindBoxType.Blue:
-                pool = BLUE_POOL;
-                break;
-            case BlindBoxType.The:
-                pool = THE_POOL;
-                break;
-        }
-        return pool;
+        const typeToNum = Number(type);
+        return this.pools[typeToNum];
     }
 
     // reveal the avatar tokenId will bind with
     // the given revealedId
-    async revealNft(avatarId: number): Promise<number | never> {
+    async revealNft(avatarId: number): Promise<number> {
         // check the contract the stage is on reveal or not
         const enableReveal = this.avatarService.enableReveal();
         if (!enableReveal) {

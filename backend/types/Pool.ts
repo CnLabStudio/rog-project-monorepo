@@ -2,7 +2,6 @@ export enum POOL_TYPE {
     GOLD,
     BLACK,
     RED,
-    BLUE,
     THE,
 }
 

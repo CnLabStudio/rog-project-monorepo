@@ -1,17 +1,18 @@
 'use strict';
 
 import { DynamoDB } from 'aws-sdk';
+import dotenv from "dotenv";
+dotenv.config();
 
 let options = {};
 
 // connect to local DB if running offline
 if (process.env.IS_OFFLINE) {
   options = {
-    region: 'localhost',
-    endpoint: 'http://0.0.0.0:8000',
+    region: process.env.REGION,
     credentials: {
-      accessKeyId: 'MockAccessKeyId',
-      secretAccessKey: 'MockSecretAccessKey'
+      accessKeyId: process.env.ACCESS_KEY_ID,
+      secretAccessKey: process.env.SECRET_ACCESS_KEY
     }
   };
 }

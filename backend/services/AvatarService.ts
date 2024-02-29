@@ -14,7 +14,7 @@ export default class AvatarService {
         this.contract = contract;
     }
 
-    async enableReveal(): Promise<boolean | never> {
+    async enableReveal(): Promise<boolean> {
         const enable = await this.contract.revealed();
         return enable;
     }

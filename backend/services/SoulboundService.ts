@@ -1,7 +1,6 @@
 import { BlindBoxType, Metadata } from "../types";
 import {
     BlackAether,
-    BlueAether,
     GoldAether,
     RedAether,
     TheAether,
@@ -60,9 +59,6 @@ export default class SoulboundService {
                 break;
             case BlindBoxType.Red:
                 metadata = RedAether;
-                break;
-            case BlindBoxType.Blue:
-                metadata = BlueAether;
                 break;
             case BlindBoxType.The:
                 metadata = TheAether;
