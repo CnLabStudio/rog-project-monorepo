@@ -26,15 +26,15 @@ export default class AvatarService {
         return Number(souldboundId);
     }
 
-    async createAvatar(tokenId: number, revealedId: number) {
+    async createAvatar(avatar: Avatar) {
         const params = {
             TableName: this.tableName,
             Item: {
-                tokenId: tokenId,
-                revealed: revealedId,
+                tokenId: avatar.tokenId,
+                revealed: avatar.revealed,
                 createdAt: new Date().getTime(),
             },
-        }
+        };
 
         await this.client.put(params).promise();
     }
@@ -45,7 +45,7 @@ export default class AvatarService {
             Key: {
                 id: tokenId,
             },
-        }
+        };
 
         const res = await this.client.get(params).promise();
         const avatar = res.Item as Avatar;
@@ -70,7 +70,7 @@ export default class AvatarService {
                 tokenId: avatarId,
             },
             Select: "COUNT",
-        }
+        };
 
         const res = await this.client.scan(params).promise();
         const count = res.Count;
@@ -83,12 +83,12 @@ export default class AvatarService {
     async isMetadataRevealed(revealed_id: bigint): Promise<boolean> {
         const params = {
             TableName: process.env.DYNAMODB_TABLE!,
-            FilterExpression: '#avatar_revealedId = :revealedId',
+            FilterExpression: "#avatar_revealedId = :revealedId",
             ExpressionAttributeValues: {
-              ':revealedId': Number(revealed_id),
+                ":revealedId": Number(revealed_id),
             },
-            ExpressionAttributeNames: { 
-              "#avatar_revealedId": "revealedId",
+            ExpressionAttributeNames: {
+                "#avatar_revealedId": "revealedId",
             },
             Select: "COUNT",
         };

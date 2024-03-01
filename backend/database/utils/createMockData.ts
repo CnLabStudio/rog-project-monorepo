@@ -1,4 +1,4 @@
-import { client } from "../database/DynamoDB";
+import { client } from "../DynamoDB";
 import { tableNames } from "./constants";
 
 const createMockData = async () => {
@@ -12,7 +12,7 @@ const createMockData = async () => {
                 type: type,
                 createdAt: new Date().getTime(),
             },
-        }
+        };
 
         await client.put(params).promise();
     }

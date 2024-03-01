@@ -1,7 +1,4 @@
-import {
-    POOLS,
-    VRF,
-} from "../constants";
+import { POOLS, VRF } from "../constants";
 import { BlindBoxType, Pool } from "../types";
 import SoulboundService from "./SoulboundService";
 import AvatarService from "./AvatarService";
@@ -65,14 +62,15 @@ export default class PoolService {
         while (isRevealed) {
             offset = (offset + 1n) % pool.size;
             revealedId = pool.startIdx + offset;
-            isRevealed = await this.avatarService.isMetadataRevealed(revealedId);
+            isRevealed =
+                await this.avatarService.isMetadataRevealed(revealedId);
         }
 
         // save into the db
-        await this.avatarService.createAvatar(
-            avatarId,
-            Number(revealedId),
-        );
+        await this.avatarService.createAvatar({
+            tokenId: avatarId,
+            revealed: Number(revealedId),
+        });
 
         return Number(revealedId);
     }

@@ -1,10 +1,5 @@
 import { BlindBoxType, Metadata } from "../types";
-import {
-    BlackAether,
-    GoldAether,
-    RedAether,
-    TheAether,
-} from "../metadata";
+import { BlackAether, GoldAether, RedAether, TheAether } from "../metadata";
 import { DocumentClient } from "aws-sdk/clients/dynamodb";
 import { client } from "../database/DynamoDB";
 
@@ -38,8 +33,8 @@ export default class SoulboundService {
                 Key: {
                     tokenId: tokenId,
                 },
-            }
-            
+            };
+
             const res = await this.client.get(params).promise();
             type = res.Item!.type as BlindBoxType;
         }

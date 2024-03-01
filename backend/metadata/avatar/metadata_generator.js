@@ -2,16 +2,14 @@ import * as fs from "fs";
 import * as path from "path";
 
 const generateMetadata = () => {
-    for (let i = 0; i < 50; i++) {
+    for (let i = 0; i < 60; i++) {
         let type;
-        if (i >= 0 && i < 10) {
+        if (i >= 0 && i < 15) {
             type = "gold";
-        } else if (i >= 10 && i < 20) {
+        } else if (i >= 15 && i < 30) {
             type = "black";
-        } else if (i >= 20 && i < 30) {
+        } else if (i >= 30 && i < 45) {
             type = "red";
-        } else if (i >= 30 && i < 40) {
-            type = "blue";
         } else {
             type = "the";
         }

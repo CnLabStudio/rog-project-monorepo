@@ -1,9 +1,12 @@
 import { Contract, Signer, Wallet, ethers } from "ethers";
 
-// TODO: need to pass node url to switch network (polygon, eth)
-export function getSigner(): Signer {
-    const provider = new ethers.JsonRpcProvider(process.env.NODE_URL!);
-    return new Wallet(process.env.PRIVATE_KEY!, provider);
+export function getSigner(nodeUrl: string): Signer {
+    const provider = new ethers.JsonRpcProvider(nodeUrl);
+    const privateKey = process.env.PRIVATE_KEY;
+    if (privateKey == undefined) {
+        throw new Error("private key is not set");
+    }
+    return new Wallet(privateKey, provider);
 }
 
 export function getContract(

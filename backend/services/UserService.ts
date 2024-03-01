@@ -22,7 +22,7 @@ export default class UserService {
                 mint: true,
                 createdAt: new Date().getTime(),
             },
-        }
+        };
 
         await this.client.put(params).promise();
     }
@@ -34,7 +34,7 @@ export default class UserService {
                 address: this.lowerAddressCase(address),
             },
             Select: "COUNT",
-        }
+        };
 
         const res = await this.client.scan(params).promise();
         const count = res.Count;

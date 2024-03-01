@@ -14,7 +14,7 @@ export async function getMetadataByToken(
     if (avatar.revealed == undefined) {
         // the nft is not revealed yet
         const soulboundId = await avatarService.getSoulboundIdById(
-            avatar.tokenId
+            avatar.tokenId,
         );
         metadata = await soulboundService.getMetadataById(soulboundId);
     } else {

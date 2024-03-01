@@ -3,18 +3,18 @@ custom:
     avatarTable: avatars-${sls:stage}
     soulboundTable: soulbounds-${sls:stage}
     serverless-dynamodb:
-    # If you only want to use DynamoDB Local in some stages, declare them here
-      stages:
-        - dev
-      start:
-        docker: true
-        port: 8000
-        inMemory: true
-        migrate: true
-        seed: true
-        convertEmptyValues: true
-      # Uncomment only if you already have a DynamoDB running locally
-        noStart: true
+        # If you only want to use DynamoDB Local in some stages, declare them here
+        stages:
+            - dev
+        start:
+            docker: true
+            port: 8000
+            inMemory: true
+            migrate: true
+            seed: true
+            convertEmptyValues: true
+            # Uncomment only if you already have a DynamoDB running locally
+            noStart: true
 
 # serverless.yml
 org: tihechen
@@ -39,16 +39,16 @@ provider:
     iamRoleStatements:
         - Effect: Allow
           Action:
-            - dynamodb:DescribeTable
-            - dynamodb:Query
-            - dynamodb:Scan
-            - dynamodb:GetItem
-            - dynamodb:PutItem
-            - dynamodb:DeleteItem
-          Resource: 
-            - "arn:aws:dynamodb:${self:provider.region}:*:table/${self:provider.environment.USER_TABLE}"
-            - "arn:aws:dynamodb:${self:provider.region}:*:table/${self:provider.environment.AVATAR_TABLE}"
-            - "arn:aws:dynamodb:${self:provider.region}:*:table/${self:provider.environment.SOULBOUND_TABLE}"
+              - dynamodb:DescribeTable
+              - dynamodb:Query
+              - dynamodb:Scan
+              - dynamodb:GetItem
+              - dynamodb:PutItem
+              - dynamodb:DeleteItem
+          Resource:
+              - "arn:aws:dynamodb:${self:provider.region}:*:table/${self:provider.environment.USER_TABLE}"
+              - "arn:aws:dynamodb:${self:provider.region}:*:table/${self:provider.environment.AVATAR_TABLE}"
+              - "arn:aws:dynamodb:${self:provider.region}:*:table/${self:provider.environment.SOULBOUND_TABLE}"
 
 functions:
     freemint:
@@ -71,7 +71,7 @@ functions:
                   method: post
 ## create dynamodb tables, comment if the tables exist
 # resources:
-#     - ${file(database/dynamodb-table.yml)}
+#     - ${file(database/utils/dynamodb-table.yml)}
 
 plugins:
     - serverless-plugin-typescript

@@ -50,13 +50,10 @@ export const revealAvatar = async (contract) => {
         "please choose which blind box you are about to reveal: ",
     );
 
-    await fetch(
-        `http://localhost:3000/reveal/${tokenId}`,
-        {
-            method: "POST",
-            body: "application/json",
-        },
-    );
+    await fetch(`http://localhost:3000/reveal/${tokenId}`, {
+        method: "POST",
+        body: "application/json",
+    });
 
     console.log("reveal succeed, here's the revealed result:");
     await displayMetadata(contract, [tokenId]);

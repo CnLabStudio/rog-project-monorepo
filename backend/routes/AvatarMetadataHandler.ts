@@ -16,7 +16,11 @@ export const metadata = async (
     console.log("query token id: ", tokenId);
 
     try {
-        const signer = getSigner();
+        const nodeUrl = process.env.ETH_NODE_URL;
+        if (nodeUrl == undefined) {
+            throw new Error("node url is not set");
+        }
+        const signer = getSigner(nodeUrl);
         const contract = getContract(signer, AVATAR_ADDRESS, AvatarAbi);
 
         const avatarService = new AvatarService(contract);

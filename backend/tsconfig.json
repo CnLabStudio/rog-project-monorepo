@@ -7,27 +7,24 @@
         "strict": true,
         "skipLibCheck": true,
         "resolveJsonModule": true,
-        "lib": ["es6", "esnext.bigint"]
+        "lib": ["es6", "esnext.bigint"],
     },
     "include": [
         "abis/*",
         "database/*",
         "metadata/**/*",
-        "metadata/avatar/*.json",
         "routes/*",
         "services/*",
         "types/*",
-        "utils/*"
+        "utils/*",
     ],
     "files": ["constants.ts"],
     "exclude": [
         "node_modules/**/*",
         "offline",
         "test/**/*",
-        "database/*.js",
-        "database/docker-compose.yml",
-        "database/*.xlsx",
+        "database/utils/**/*",
         "metadata/**/*.js",
     ],
-    "types": ["jest"]
+    "types": ["jest"],
 }

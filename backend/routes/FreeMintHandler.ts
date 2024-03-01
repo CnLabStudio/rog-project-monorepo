@@ -40,7 +40,11 @@ export const mint = async (
     }
 
     try {
-        const signer = getSigner();
+        const nodeUrl = process.env.POLYGON_NODE_URL;
+        if (nodeUrl == undefined) {
+            throw new Error("node url is not set");
+        }
+        const signer = getSigner(nodeUrl);
         const contract = getContract(signer, FREE_MINT_ADDRESS, FreeMintAbi);
 
         // airdrop nfts to the given address

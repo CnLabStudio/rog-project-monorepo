@@ -1,5 +1,5 @@
 import ExcelJs from "exceljs";
-import { client } from "./DynamoDB";
+import { client } from "../DynamoDB";
 
 const importTable = async () => {
     const workbook = new ExcelJs.Workbook();
@@ -31,9 +31,6 @@ const importTable = async () => {
             case "Red":
                 type = 2;
                 break;
-            case "Blue":
-                type = 3;
-                break;
         }
 
         const params = {
@@ -43,7 +40,7 @@ const importTable = async () => {
                 type: type,
                 createdAt: new Date().getTime(),
             },
-        }
+        };
 
         await client.put(params).promise();
     }
