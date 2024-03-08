@@ -9,6 +9,10 @@ export default class AvatarService {
     private contract: Contract;
 
     constructor(contract: Contract) {
+        if (process.env.AVATAR_TABLE == undefined) {
+            throw new Error("avatar table is not set");
+        }
+
         this.tableName = process.env.AVATAR_TABLE!;
         this.client = client;
         this.contract = contract;

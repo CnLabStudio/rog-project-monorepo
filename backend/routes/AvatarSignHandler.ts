@@ -1,36 +1,38 @@
 "use strict";
 import { APIGatewayProxyEvent, APIGatewayProxyResult } from "aws-lambda";
-import { getContract, getSigner } from "../utils/EthersHelper";
-import { AvatarAbi } from "../abis";
-import PoolService from "../services/PoolService";
-import AvatarService from "../services/AvatarService";
+import { getSigner } from "../utils/EthersHelper";
 import SoulboundService from "../services/SoulboundService";
-import { AVATAR_ADDRESS } from "../constants";
 
-export const reveal = async (
+export const sign = async (
     event: APIGatewayProxyEvent,
 ): Promise<APIGatewayProxyResult> => {
-    // get token id from api url
-    const tokenId = Number(event.pathParameters!.tokenId);
+    if (
+        event.queryStringParameters == null ||
+        event.queryStringParameters.address == undefined
+    ) {
+        throw new Error("invalid address");
+    }
 
-    console.log("reveal tokenId : ", tokenId);
+    const address = event.queryStringParameters.address;
+
+    console.log("user address: ", address);
 
     try {
         const nodeUrl = process.env.ETH_NODE_URL;
         if (nodeUrl == undefined) {
             throw new Error("node url is not set");
         }
-        
+
         const signer = getSigner(nodeUrl);
-        const contract = getContract(signer, AVATAR_ADDRESS, AvatarAbi);
 
-        const avatarService = new AvatarService(contract);
         const soulboundService = new SoulboundService();
-        const poolService = new PoolService(avatarService, soulboundService);
 
-        const revealedId = await poolService.revealNft(tokenId);
+        const isUserExist = await soulboundService.isUserExist(address);
+        if (!isUserExist) {
+            throw new Error(`user ${address} is not soulbound holder`);
+        }
 
-        console.log(`Token Id: ${tokenId}, Revealed Nft: ${revealedId}`);
+        const signature = await signer.signMessage(address);
 
         return {
             statusCode: 200,
@@ -40,7 +42,7 @@ export const reveal = async (
                 "Access-Control-Allow-Methods": "GET",
             },
             body: JSON.stringify({
-                message: `sucessfully reveal #${tokenId}.`,
+                signature: signature,
             }),
         };
     } catch (error) {
@@ -49,7 +51,7 @@ export const reveal = async (
             statusCode: 501,
             body: JSON.stringify(
                 {
-                    message: "Error occured during revealing nft.",
+                    message: "Error occured during processing signature.",
                 },
                 null,
                 2,

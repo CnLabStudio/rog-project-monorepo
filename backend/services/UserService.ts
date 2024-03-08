@@ -6,6 +6,10 @@ export default class UserService {
     private client: DocumentClient;
 
     constructor() {
+        if (process.env.USER_TABLE == undefined) {
+            throw new Error("user table is not set");
+        }
+
         this.tableName = process.env.USER_TABLE!;
         this.client = client;
     }

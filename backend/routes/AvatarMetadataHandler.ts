@@ -10,8 +10,14 @@ import { AVATAR_ADDRESS } from "../constants";
 export const metadata = async (
     event: APIGatewayProxyEvent,
 ): Promise<APIGatewayProxyResult> => {
+    if (
+        event.pathParameters == null ||
+        event.pathParameters.tokenId == undefined
+    ) {
+        throw new Error("invalid token id");
+    }
     // get token id from api url
-    const tokenId = Number(event.pathParameters!.tokenId);
+    const tokenId = Number(event.pathParameters.tokenId);
 
     console.log("query token id: ", tokenId);
 
@@ -20,6 +26,7 @@ export const metadata = async (
         if (nodeUrl == undefined) {
             throw new Error("node url is not set");
         }
+        
         const signer = getSigner(nodeUrl);
         const contract = getContract(signer, AVATAR_ADDRESS, AvatarAbi);
 

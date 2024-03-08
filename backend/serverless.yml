@@ -69,6 +69,12 @@ functions:
             - httpApi:
                   path: /reveal/{tokenId}
                   method: post
+    sign:
+        handler: routes/AvatarSignHandler.sign
+        events:
+            - httpApi:
+                  path: /sign
+                  method: get
 ## create dynamodb tables, comment if the tables exist
 # resources:
 #     - ${file(database/utils/dynamodb-table.yml)}

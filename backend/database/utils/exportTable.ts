@@ -15,21 +15,23 @@ const getAllSoulbounds = async () => {
             })
             .promise();
 
-        soulbounds.push(...Items.map((item) => {
-            let type;
-            switch (item.type) {
-                case 0:
-                    type = "Gold";
-                    break;
-                case 1:
-                    type = "Black";
-                    break;
-                case 2:
-                    type = "Red";
-                    break;
-            }
-            return [item.tokenId, type];
-        }));
+        soulbounds.push(
+            ...Items.map((item) => {
+                let type;
+                switch (item.type) {
+                    case 0:
+                        type = "Gold";
+                        break;
+                    case 1:
+                        type = "Black";
+                        break;
+                    case 2:
+                        type = "Red";
+                        break;
+                }
+                return [item.tokenId, type];
+            }),
+        );
 
         if (LastEvaluatedKey) {
             await recursiveProcess(LastEvaluatedKey);
