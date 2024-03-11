@@ -13,7 +13,7 @@ export const sign = async (
         throw new Error("invalid address");
     }
 
-    const address = event.queryStringParameters.address;
+    const address = event.queryStringParameters.address.toLowerCase();
 
     console.log("user address: ", address);
 

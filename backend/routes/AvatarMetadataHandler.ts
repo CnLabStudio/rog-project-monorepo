@@ -16,6 +16,7 @@ export const metadata = async (
     ) {
         throw new Error("invalid token id");
     }
+    
     // get token id from api url
     const tokenId = Number(event.pathParameters.tokenId);
 
@@ -26,7 +27,7 @@ export const metadata = async (
         if (nodeUrl == undefined) {
             throw new Error("node url is not set");
         }
-        
+
         const signer = getSigner(nodeUrl);
         const contract = getContract(signer, AVATAR_ADDRESS, AvatarAbi);
 

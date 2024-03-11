@@ -28,7 +28,7 @@ export const mint = async (
     // get token ids & addr from api url
     let firstTokenId = Number(event.queryStringParameters.firstTokenId);
     let secondTokenId = Number(event.queryStringParameters.secondTokenId);
-    let address = event.queryStringParameters.address;
+    let address = event.queryStringParameters.address.toLowerCase();
 
     console.log("first free mint tokenId : ", firstTokenId);
     console.log("second free mint tokenId : ", secondTokenId);

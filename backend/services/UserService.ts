@@ -14,15 +14,11 @@ export default class UserService {
         this.client = client;
     }
 
-    private lowerAddressCase(address: string): string {
-        return address.toLowerCase();
-    }
-
     async createUser(address: string): Promise<void> {
         const params = {
             TableName: this.tableName,
             Item: {
-                address: this.lowerAddressCase(address),
+                address: address,
                 mint: true,
                 createdAt: new Date().getTime(),
             },
@@ -35,7 +31,7 @@ export default class UserService {
         const params = {
             TableName: this.tableName,
             Key: {
-                address: this.lowerAddressCase(address),
+                address: address,
             },
             Select: "COUNT",
         };
