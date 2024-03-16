@@ -12,7 +12,8 @@
     "include": [
         "abis/*",
         "database/*",
-        "metadata/**/*",
+        "metadata/**/*.ts",
+        "metadata/**/*.json",
         "routes/*",
         "services/*",
         "types/*",
@@ -24,7 +25,8 @@
         "offline",
         "test/**/*",
         "database/utils/**/*",
-        "metadata/**/*.js",
+        "metadata/avatar/metadata_generator.ts",
+        "metadata/avatar/*_template.json",
     ],
     "types": ["jest"],
 }

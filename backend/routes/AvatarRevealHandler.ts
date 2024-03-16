@@ -10,19 +10,28 @@ import { AVATAR_ADDRESS } from "../constants";
 export const reveal = async (
     event: APIGatewayProxyEvent,
 ): Promise<APIGatewayProxyResult> => {
-    if (
-        event.pathParameters == null ||
-        event.pathParameters.tokenId == undefined
-    ) {
-        throw new Error("invalid token id");
-    }
-    
-    // get token id from api url
-    const tokenId = Number(event.pathParameters.tokenId);
-
-    console.log("reveal tokenId : ", tokenId);
-
     try {
+        if (
+            event.pathParameters == null ||
+            event.pathParameters.tokenId == undefined
+        ) {
+            throw new Error("invalid token id");
+        }
+
+        if (event.body == null) {
+            throw new Error("body is empty");
+        }
+
+        const { address } = JSON.parse(event.body);
+        if (address == undefined || address == null) {
+            throw new Error("owner address is not set");
+        }
+
+        // get token id from api url
+        const tokenId = Number(event.pathParameters.tokenId);
+
+        console.log("reveal tokenId : ", tokenId);
+
         const nodeUrl = process.env.ETH_NODE_URL;
         if (nodeUrl == undefined) {
             throw new Error("node url is not set");
@@ -34,6 +43,14 @@ export const reveal = async (
         const avatarService = new AvatarService(contract);
         const soulboundService = new SoulboundService();
         const poolService = new PoolService(avatarService, soulboundService);
+
+        const isOwner = await avatarService.isOwner(
+            address.toLowerCase(),
+            tokenId,
+        );
+        if (!isOwner) {
+            throw new Error(`The owner of token#${tokenId} is wrong`);
+        }
 
         const revealedId = await poolService.revealNft(tokenId);
 
@@ -53,14 +70,11 @@ export const reveal = async (
     } catch (error) {
         console.error(error);
         return {
-            statusCode: 501,
-            body: JSON.stringify(
-                {
-                    message: "Error occured during revealing nft.",
-                },
-                null,
-                2,
-            ),
+            statusCode: 500,
+            headers: { "content-type": "application/json" },
+            body: JSON.stringify({
+                message: "Error occured during revealing nft.",
+            }),
         };
     }
 };

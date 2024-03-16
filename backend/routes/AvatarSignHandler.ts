@@ -1,38 +1,24 @@
 "use strict";
 import { APIGatewayProxyEvent, APIGatewayProxyResult } from "aws-lambda";
-import { getSigner } from "../utils/EthersHelper";
-import SoulboundService from "../services/SoulboundService";
+import SignatureService from "../services/SignatureService";
 
 export const sign = async (
     event: APIGatewayProxyEvent,
 ): Promise<APIGatewayProxyResult> => {
-    if (
-        event.queryStringParameters == null ||
-        event.queryStringParameters.address == undefined
-    ) {
-        throw new Error("invalid address");
-    }
-
-    const address = event.queryStringParameters.address.toLowerCase();
-
-    console.log("user address: ", address);
-
     try {
-        const nodeUrl = process.env.ETH_NODE_URL;
-        if (nodeUrl == undefined) {
-            throw new Error("node url is not set");
+        if (
+            event.queryStringParameters == null ||
+            event.queryStringParameters.address == undefined
+        ) {
+            throw new Error("invalid address");
         }
 
-        const signer = getSigner(nodeUrl);
+        const address = event.queryStringParameters.address.toLowerCase();
 
-        const soulboundService = new SoulboundService();
+        console.log("user address: ", address);
 
-        const isUserExist = await soulboundService.isUserExist(address);
-        if (!isUserExist) {
-            throw new Error(`user ${address} is not soulbound holder`);
-        }
-
-        const signature = await signer.signMessage(address);
+        const signatureService = new SignatureService();
+        const signature = await signatureService.getSignatureByAddress(address);
 
         return {
             statusCode: 200,
@@ -42,20 +28,17 @@ export const sign = async (
                 "Access-Control-Allow-Methods": "GET",
             },
             body: JSON.stringify({
-                signature: signature,
+                signature: signature.signature,
             }),
         };
     } catch (error) {
         console.error(error);
         return {
-            statusCode: 501,
-            body: JSON.stringify(
-                {
-                    message: "Error occured during processing signature.",
-                },
-                null,
-                2,
-            ),
+            statusCode: 500,
+            headers: { "content-type": "application/json" },
+            body: JSON.stringify({
+                message: "Error occured during signing.",
+            }),
         };
     }
 };

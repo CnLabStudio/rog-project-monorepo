@@ -3,7 +3,7 @@
         "inputs": [
             {
                 "internalType": "address",
-                "name": "_treasury",
+                "name": "_mintRole",
                 "type": "address"
             },
             {
@@ -11,21 +11,7 @@
                 "name": "_uriPrefix",
                 "type": "string"
             },
-            {
-                "internalType": "string",
-                "name": "_uriSuffix",
-                "type": "string"
-            },
-            {
-                "internalType": "uint256",
-                "name": "_maxSupply",
-                "type": "uint256"
-            },
-            {
-                "internalType": "uint96",
-                "name": "_royaltyFee",
-                "type": "uint96"
-            }
+            { "internalType": "string", "name": "_uriSuffix", "type": "string" }
         ],
         "stateMutability": "nonpayable",
         "type": "constructor"
@@ -41,56 +27,6 @@
         "type": "error"
     },
     { "inputs": [], "name": "BalanceQueryForZeroAddress", "type": "error" },
-    {
-        "inputs": [
-            {
-                "internalType": "uint256",
-                "name": "numerator",
-                "type": "uint256"
-            },
-            {
-                "internalType": "uint256",
-                "name": "denominator",
-                "type": "uint256"
-            }
-        ],
-        "name": "ERC2981InvalidDefaultRoyalty",
-        "type": "error"
-    },
-    {
-        "inputs": [
-            { "internalType": "address", "name": "receiver", "type": "address" }
-        ],
-        "name": "ERC2981InvalidDefaultRoyaltyReceiver",
-        "type": "error"
-    },
-    {
-        "inputs": [
-            { "internalType": "uint256", "name": "tokenId", "type": "uint256" },
-            {
-                "internalType": "uint256",
-                "name": "numerator",
-                "type": "uint256"
-            },
-            {
-                "internalType": "uint256",
-                "name": "denominator",
-                "type": "uint256"
-            }
-        ],
-        "name": "ERC2981InvalidTokenRoyalty",
-        "type": "error"
-    },
-    {
-        "inputs": [
-            { "internalType": "uint256", "name": "tokenId", "type": "uint256" },
-            { "internalType": "address", "name": "receiver", "type": "address" }
-        ],
-        "name": "ERC2981InvalidTokenRoyaltyReceiver",
-        "type": "error"
-    },
-    { "inputs": [], "name": "ExceedMaxTokens", "type": "error" },
-    { "inputs": [], "name": "InvalidInput", "type": "error" },
     { "inputs": [], "name": "InvalidQueryRange", "type": "error" },
     {
         "inputs": [],
@@ -437,15 +373,6 @@
         "type": "function"
     },
     {
-        "inputs": [],
-        "name": "maxSupply",
-        "outputs": [
-            { "internalType": "uint256", "name": "", "type": "uint256" }
-        ],
-        "stateMutability": "view",
-        "type": "function"
-    },
-    {
         "inputs": [
             { "internalType": "address", "name": "_to", "type": "address" },
             {
@@ -457,6 +384,15 @@
         "name": "mintGiveawayTokens",
         "outputs": [],
         "stateMutability": "nonpayable",
+        "type": "function"
+    },
+    {
+        "inputs": [],
+        "name": "mintRole",
+        "outputs": [
+            { "internalType": "address", "name": "", "type": "address" }
+        ],
+        "stateMutability": "view",
         "type": "function"
     },
     {
@@ -495,23 +431,6 @@
     },
     {
         "inputs": [
-            { "internalType": "uint256", "name": "tokenId", "type": "uint256" },
-            {
-                "internalType": "uint256",
-                "name": "salePrice",
-                "type": "uint256"
-            }
-        ],
-        "name": "royaltyInfo",
-        "outputs": [
-            { "internalType": "address", "name": "", "type": "address" },
-            { "internalType": "uint256", "name": "", "type": "uint256" }
-        ],
-        "stateMutability": "view",
-        "type": "function"
-    },
-    {
-        "inputs": [
             { "internalType": "address", "name": "from", "type": "address" },
             { "internalType": "address", "name": "to", "type": "address" },
             { "internalType": "uint256", "name": "tokenId", "type": "uint256" }
@@ -543,60 +462,6 @@
             { "internalType": "bool", "name": "approved", "type": "bool" }
         ],
         "name": "setApprovalForAll",
-        "outputs": [],
-        "stateMutability": "nonpayable",
-        "type": "function"
-    },
-    {
-        "inputs": [
-            {
-                "internalType": "address",
-                "name": "_receiver",
-                "type": "address"
-            },
-            {
-                "internalType": "uint96",
-                "name": "_feeNumerator",
-                "type": "uint96"
-            }
-        ],
-        "name": "setDefaultRoyalty",
-        "outputs": [],
-        "stateMutability": "nonpayable",
-        "type": "function"
-    },
-    {
-        "inputs": [
-            {
-                "internalType": "uint256",
-                "name": "_maxSupply",
-                "type": "uint256"
-            }
-        ],
-        "name": "setMaxSupply",
-        "outputs": [],
-        "stateMutability": "nonpayable",
-        "type": "function"
-    },
-    {
-        "inputs": [
-            {
-                "internalType": "uint256",
-                "name": "_tokenId",
-                "type": "uint256"
-            },
-            {
-                "internalType": "address",
-                "name": "_receiver",
-                "type": "address"
-            },
-            {
-                "internalType": "uint96",
-                "name": "_feeNumerator",
-                "type": "uint96"
-            }
-        ],
-        "name": "setTokenRoyalty",
         "outputs": [],
         "stateMutability": "nonpayable",
         "type": "function"

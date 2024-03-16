@@ -13,7 +13,7 @@ export default class AvatarService {
             throw new Error("avatar table is not set");
         }
 
-        this.tableName = process.env.AVATAR_TABLE!;
+        this.tableName = process.env.AVATAR_TABLE;
         this.client = client;
         this.contract = contract;
     }
@@ -21,6 +21,11 @@ export default class AvatarService {
     async enableReveal(): Promise<boolean> {
         const enable = await this.contract.revealed();
         return enable;
+    }
+
+    async isOwner(address: string, tokenId: number): Promise<boolean> {
+        const owner = await this.contract.ownerOf(tokenId);
+        return owner.toLowerCase() == address;
     }
 
     // get the soulboundId so that soulbound service
@@ -47,7 +52,7 @@ export default class AvatarService {
         const params = {
             TableName: this.tableName,
             Key: {
-                id: tokenId,
+                tokenId: tokenId,
             },
         };
 
@@ -60,7 +65,7 @@ export default class AvatarService {
         };
 
         // the nft is revealed
-        if (Object.keys(res).length > 0) {
+        if (avatar != undefined) {
             token.revealed = avatar.revealed;
         }
 
@@ -86,7 +91,7 @@ export default class AvatarService {
     // then the metadata is revealed
     async isMetadataRevealed(revealed_id: bigint): Promise<boolean> {
         const params = {
-            TableName: process.env.DYNAMODB_TABLE!,
+            TableName: this.tableName,
             FilterExpression: "#avatar_revealedId = :revealedId",
             ExpressionAttributeValues: {
                 ":revealedId": Number(revealed_id),

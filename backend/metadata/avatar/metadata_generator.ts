@@ -22,7 +22,7 @@ const generateMetadata = () => {
         );
 
         metadata.name = metadata.name + ` #${i}`;
-        metadata.image = `ipfs://QmSWQH8ShTHxju36SnqiKg5svHULQp8fpeX7GmMekJDf6a/${i}.png`;
+        metadata.image = `ipfs://QmV49R5CCWnjjYAewmGF8ZNpaKVVjkMvZNDzuBAucLut3C/${i}.png`;
 
         fs.writeFileSync(
             path.join(__dirname, `./${i}.json`),

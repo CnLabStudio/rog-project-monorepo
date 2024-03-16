@@ -12,7 +12,7 @@ export default class SoulboundService {
             throw new Error("soulbound table is not set");
         }
 
-        this.tableName = process.env.SOULBOUND_TABLE!;
+        this.tableName = process.env.SOULBOUND_TABLE;
         this.client = client;
     }
 
@@ -40,29 +40,14 @@ export default class SoulboundService {
             };
 
             const res = await this.client.get(params).promise();
-            type = res.Item!.type as BlindBoxType;
+            if (res.Item == undefined) {
+                throw new Error("Invalid Soulbound NFT");
+            }
+
+            type = res.Item.type as BlindBoxType;
         }
 
         return type;
-    }
-
-    async isUserExist(address: string): Promise<boolean> {
-        const params = {
-            TableName: this.tableName,
-            FilterExpression: "#soulbound_address = :address",
-            ExpressionAttributeValues: {
-                ":address": address,
-            },
-            ExpressionAttributeNames: {
-                "#soulbound_address": "address",
-            },
-            Select: "COUNT",
-        };
-
-        const res = await this.client.scan(params).promise();
-        const count = res.Count;
-
-        return count != 0 ? true : false;
     }
 
     async getMetadataByType(type: BlindBoxType): Promise<Metadata> {

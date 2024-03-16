@@ -6,11 +6,7 @@
                 "name": "_treasury",
                 "type": "address"
             },
-            {
-                "internalType": "address",
-                "name": "_soulbound",
-                "type": "address"
-            },
+            { "internalType": "address", "name": "_signer", "type": "address" },
             {
                 "internalType": "uint256",
                 "name": "_maxSupply",
@@ -66,6 +62,21 @@
         "type": "error"
     },
     { "inputs": [], "name": "BalanceQueryForZeroAddress", "type": "error" },
+    { "inputs": [], "name": "ECDSAInvalidSignature", "type": "error" },
+    {
+        "inputs": [
+            { "internalType": "uint256", "name": "length", "type": "uint256" }
+        ],
+        "name": "ECDSAInvalidSignatureLength",
+        "type": "error"
+    },
+    {
+        "inputs": [
+            { "internalType": "bytes32", "name": "s", "type": "bytes32" }
+        ],
+        "name": "ECDSAInvalidSignatureS",
+        "type": "error"
+    },
     {
         "inputs": [
             {
@@ -117,6 +128,7 @@
     { "inputs": [], "name": "ExceedMaxTokens", "type": "error" },
     { "inputs": [], "name": "InvalidInput", "type": "error" },
     { "inputs": [], "name": "InvalidQueryRange", "type": "error" },
+    { "inputs": [], "name": "InvalidSignature", "type": "error" },
     { "inputs": [], "name": "InvalidTimestamp", "type": "error" },
     {
         "inputs": [],
@@ -596,7 +608,12 @@
     },
     {
         "inputs": [
-            { "internalType": "uint256", "name": "_tokenId", "type": "uint256" }
+            {
+                "internalType": "uint256",
+                "name": "_tokenId",
+                "type": "uint256"
+            },
+            { "internalType": "bytes", "name": "_signature", "type": "bytes" }
         ],
         "name": "mintBySoulboundHolder",
         "outputs": [],
@@ -870,13 +887,9 @@
     },
     {
         "inputs": [
-            {
-                "internalType": "address",
-                "name": "_soulBound",
-                "type": "address"
-            }
+            { "internalType": "address", "name": "_signer", "type": "address" }
         ],
-        "name": "setSoulboundAddress",
+        "name": "setSigner",
         "outputs": [],
         "stateMutability": "nonpayable",
         "type": "function"
@@ -933,7 +946,7 @@
     },
     {
         "inputs": [],
-        "name": "soulboundAddress",
+        "name": "signer",
         "outputs": [
             { "internalType": "address", "name": "", "type": "address" }
         ],
@@ -1044,6 +1057,23 @@
         "inputs": [],
         "name": "uriSuffix",
         "outputs": [{ "internalType": "string", "name": "", "type": "string" }],
+        "stateMutability": "view",
+        "type": "function"
+    },
+    {
+        "inputs": [
+            {
+                "internalType": "uint256",
+                "name": "_tokenId",
+                "type": "uint256"
+            },
+            { "internalType": "address", "name": "_signer", "type": "address" },
+            { "internalType": "bytes", "name": "_signature", "type": "bytes" }
+        ],
+        "name": "verify",
+        "outputs": [
+            { "internalType": "bool", "name": "_whitelisted", "type": "bool" }
+        ],
         "stateMutability": "view",
         "type": "function"
     },

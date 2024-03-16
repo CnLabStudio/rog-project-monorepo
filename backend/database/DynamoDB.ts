@@ -1,8 +1,9 @@
 "use strict";
 
 import { DynamoDB } from "aws-sdk";
-import dotenv from "dotenv";
-dotenv.config();
+// uncommon on local test use
+// import dotenv from "dotenv";
+// dotenv.config();
 
 let options = {};
 

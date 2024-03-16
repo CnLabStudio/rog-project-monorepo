@@ -10,19 +10,19 @@ import { AVATAR_ADDRESS } from "../constants";
 export const metadata = async (
     event: APIGatewayProxyEvent,
 ): Promise<APIGatewayProxyResult> => {
-    if (
-        event.pathParameters == null ||
-        event.pathParameters.tokenId == undefined
-    ) {
-        throw new Error("invalid token id");
-    }
-    
-    // get token id from api url
-    const tokenId = Number(event.pathParameters.tokenId);
-
-    console.log("query token id: ", tokenId);
-
     try {
+        if (
+            event.pathParameters == null ||
+            event.pathParameters.tokenId == undefined
+        ) {
+            throw new Error("invalid token id");
+        }
+
+        // get token id from api url
+        const tokenId = Number(event.pathParameters.tokenId);
+
+        console.log("query token id: ", tokenId);
+
         const nodeUrl = process.env.ETH_NODE_URL;
         if (nodeUrl == undefined) {
             throw new Error("node url is not set");
@@ -56,14 +56,11 @@ export const metadata = async (
     } catch (error) {
         console.error(error);
         return {
-            statusCode: 501,
-            body: JSON.stringify(
-                {
-                    message: "Error occured during processing metadata.",
-                },
-                null,
-                2,
-            ),
+            statusCode: 500,
+            headers: { "content-type": "application/json" },
+            body: JSON.stringify({
+                message: "Error occured during fetching metadata.",
+            }),
         };
     }
 };
