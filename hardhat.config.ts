@@ -41,6 +41,11 @@ function getNetworks(): NetworksUserConfig {
       chainId: 80001,
       accounts: [`0x${process.env.PROJECT_PK_TEST}`],
     },
+    sepolia: {
+      url: `https://eth-sepolia.g.alchemy.com/v2/${alchemyApiKey}`,
+      chainId: 11155111,
+      accounts: [`0x${process.env.PROJECT_PK_TEST}`],
+    }
   }
 }
 
@@ -61,6 +66,7 @@ const hardhatConfig: HardhatUserConfig = {
   },
   etherscan: {
     apiKey: {
+      sepolia: `${process.env.ETHERSCAN_API_KEY}`,
       polygon: `${process.env.POLYGONSCAN_API_KEY}`,
       polygonMumbai: `${process.env.POLYGONSCAN_API_KEY}`,
     },
