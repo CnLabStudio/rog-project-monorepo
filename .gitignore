@@ -10,5 +10,6 @@ typechain-types
 cache
 artifacts
 
+*.csv
 *.json
 *.png
