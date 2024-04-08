@@ -4,6 +4,12 @@ import { IERC20__factory, PhaseTwoSoulBound } from '../build/typechain'
 import { PhaseThreeAvatar } from '../build/typechain'
 import { SignerWithAddress } from '@nomicfoundation/hardhat-ethers/signers'
 
+async function genSign(signer: any, address: string, tokenId: number) {
+  const messageHash = ethers.solidityPackedKeccak256([ "address", "uint256" ], [ address, tokenId ]);
+  const signature = await signer.signMessage(ethers.toBeArray(messageHash));
+  return signature
+}
+
 describe('PhaseThreeAvatar', () => {
   let signers: SignerWithAddress[]
   let controller: SignerWithAddress
@@ -33,13 +39,15 @@ describe('PhaseThreeAvatar', () => {
       .then((factory) =>
         factory.deploy(
           controller.address,
-          phaseTwoSoulBound.getAddress(),
+          controller.address,
           _maxSupply,
           _royaltyFee,
           _linkAddress,
           _wrapperAddress,
           _callbackGasLimit,
-          _requestConfirmations
+          _requestConfirmations,
+          '',
+          ''
         )
       )
   })
@@ -48,9 +56,6 @@ describe('PhaseThreeAvatar', () => {
     it('should not be able to transfer tokens from one address to another', async function () {
       // Mint some tokens to the owner
       await phaseTwoSoulBound.mintGiveawayTokens(signers[0].address, 1)
-
-      // Mint avatar token with soulbound token to the owner
-      await phaseThreeAvatar.connect(signers[0]).mintBySoulboundHolder(0)
     })
   })
 
@@ -72,6 +77,17 @@ describe('PhaseThreeAvatar', () => {
       )
 
       await phaseThreeAvatar.connect(signers[0]).requestRandomWords()
+    })
+  })
+
+  describe("Signature", function () {
+    it("should success", async function () {
+        let totalTokens = await phaseThreeAvatar.totalSupply();
+        expect(totalTokens).to.be.equal('0');
+        const sign = await genSign(signers[0], signers[1].address, 1);
+        await phaseThreeAvatar.connect(signers[1]).mintBySoulboundHolder(1, sign);
+        totalTokens = await phaseThreeAvatar.totalSupply();
+        expect(totalTokens).to.be.equal('1');
     })
   })
 })
