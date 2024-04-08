@@ -37,10 +37,12 @@ async function main() {
   console.log('Contract address:', await phaseTwoSoulBound.getAddress())
 
   await phaseTwoSoulBound.setURI(
-    'ipfs://QmNhUw4Xv9jj6h2NRqf2fm8nZBNRNzFwDXJ5BLwLWWVKRF/',
+    'ipfs://QmRuqLDVH66MGXXBVSVJBUhnqPuMP7PdRuU9KaNPLn85aF/',
     '.json'
   )
   */
+  
+  
   const phaseThreeAvatar = PhaseThreeAvatar__factory.connect(
     constants.phaseThreeAvatarAddr,
     addrs[0]
