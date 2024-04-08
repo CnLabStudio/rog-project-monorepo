@@ -8,6 +8,8 @@ import "@openzeppelin/contracts/token/ERC20/IERC20.sol";
 import "@openzeppelin/contracts/token/ERC721/IERC721.sol";
 import "@openzeppelin/contracts/token/common/ERC2981.sol";
 import "@openzeppelin/contracts/utils/Strings.sol";
+import "@openzeppelin/contracts/utils/cryptography/ECDSA.sol";
+import "@openzeppelin/contracts/utils/cryptography/MessageHashUtils.sol";
 import "@chainlink/contracts/src/v0.8/shared/access/ConfirmedOwner.sol";
 import "@chainlink/contracts/src/v0.8/vrf/VRFV2WrapperConsumerBase.sol";
 
@@ -16,6 +18,7 @@ error TokenNotExist();
 error Revealed();
 error InvalidInput();
 error InvalidTimestamp();
+error InvalidSignature();
 
 contract PhaseThreeAvatar is ERC721AQueryable, ERC2981, VRFV2WrapperConsumerBase, ConfirmedOwner {
     using Strings for uint256;
@@ -36,7 +39,7 @@ contract PhaseThreeAvatar is ERC721AQueryable, ERC2981, VRFV2WrapperConsumerBase
                          State Variables V1
     //////////////////////////////////////////////////////////////*/
 
-    address public soulboundAddress;
+    address public signer;
     uint256 public soulboundMintTime;
     uint256 public publicMintTime;
     uint256 public publicMintPrice;
@@ -79,7 +82,7 @@ contract PhaseThreeAvatar is ERC721AQueryable, ERC2981, VRFV2WrapperConsumerBase
 
     constructor(
         address _treasury,
-        address _soulbound,
+        address _signer,
         uint256 _maxSupply,
         uint96 _royaltyFee,
         address _linkAddress,
@@ -105,7 +108,7 @@ contract PhaseThreeAvatar is ERC721AQueryable, ERC2981, VRFV2WrapperConsumerBase
             numWords: 1
         });
 
-        soulboundAddress = _soulbound;
+        signer = _signer;
         randomAlgoHash = _randomAlgoHash;
         randomAlgoIPFSHash = _randomAlgoIPFSHash;
 
@@ -147,6 +150,22 @@ contract PhaseThreeAvatar is ERC721AQueryable, ERC2981, VRFV2WrapperConsumerBase
         return string(abi.encodePacked(uriPrefix, _tokenId.toString(), uriSuffix));
     }
 
+    /**
+     * @dev Check whether an address is in the list
+     * @dev Check whether the signature generation process is abnormal
+     * @param _tokenId TokenId of tokens that the address wants to verify with soulbound
+     * @param _signature Signature used to verify the address is in the list
+     */
+    function verify(uint256 _tokenId, address _signer, bytes calldata _signature)
+        public
+        view
+        returns (bool _whitelisted)
+    {
+        bytes32 hash = MessageHashUtils.toEthSignedMessageHash(keccak256(abi.encodePacked(msg.sender, _tokenId)));
+
+        return _signer == ECDSA.recover(hash, _signature);
+    }
+
     /*///////////////////////////////////////////////////////////////
                         Admin Operation Functions
     //////////////////////////////////////////////////////////////*/
@@ -172,15 +191,16 @@ contract PhaseThreeAvatar is ERC721AQueryable, ERC2981, VRFV2WrapperConsumerBase
      * @notice This function is only available when the total supply is less than the maximum supply
      * @notice This function is only available when the soulbound token holder has not minted the token
      */
-    function mintBySoulboundHolder(uint256 _tokenId) external {
+    function mintBySoulboundHolder(uint256 _tokenId, bytes calldata _signature) external {
         if (totalSupply() + 1 > maxSupply) {
             revert ExceedMaxTokens();
         }
         if (block.timestamp < soulboundMintTime) {
             revert InvalidTimestamp();
         }
-        if (IERC721(soulboundAddress).ownerOf(_tokenId) != msg.sender) {
-            revert InvalidInput();
+        // If this signature is from a valid signer
+        if (!verify(_tokenId, signer, _signature)) {
+            revert InvalidSignature();
         }
 
         avatarToSoulbound[totalSupply()] = _tokenId;
@@ -217,13 +237,13 @@ contract PhaseThreeAvatar is ERC721AQueryable, ERC2981, VRFV2WrapperConsumerBase
     //////////////////////////////////////////////////////////////*/
 
     /**
-     * @dev Set the address of the soulbound token contract
-     * @param _soulBound New address of the soulbound token contract
+     * @dev Set the address of the signer
+     * @param _signer New address of the signer
      */
-    function setSoulboundAddress(address _soulBound) external onlyOwner {
-        soulboundAddress = _soulBound;
+    function setSigner(address _signer) external onlyOwner {
+        signer = _signer;
 
-        emit AddressSet("soulboundAddress", _soulBound);
+        emit AddressSet("signer", _signer);
     }
 
     /**
