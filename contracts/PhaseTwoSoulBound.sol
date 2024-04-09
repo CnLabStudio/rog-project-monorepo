@@ -14,7 +14,7 @@ contract PhaseTwoSoulBound is ERC721AQueryable, Ownable {
     using Strings for uint256;
 
     /*///////////////////////////////////////////////////////////////
-                         State Variables V1
+                         State Variables
     //////////////////////////////////////////////////////////////*/
 
     /// @dev address that can give away tokens
@@ -27,6 +27,7 @@ contract PhaseTwoSoulBound is ERC721AQueryable, Ownable {
                                 Events
     //////////////////////////////////////////////////////////////*/
 
+    event AddressSet(string parameter, address value);
     event MintTokens(address to, uint256 quantity, uint256 totalSupply);
     event URISet(string uriPrefix, string uriSuffix);
     event MaxSupplySet(uint256 maxTokenSupply);
@@ -120,6 +121,16 @@ contract PhaseTwoSoulBound is ERC721AQueryable, Ownable {
     /*///////////////////////////////////////////////////////////////
                         Admin Parameters Functions
     //////////////////////////////////////////////////////////////*/
+
+    /**
+     * @dev Set the address of the mintRole
+     * @param _mintRole New address of the mintRole
+     */
+    function setMintRole(address _mintRole) external onlyOwner {
+        mintRole = _mintRole;
+
+        emit AddressSet("mintRole", _mintRole);
+    }
 
     /**
      * @dev Set the URI for tokenURI, which returns the metadata of the token
