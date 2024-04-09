@@ -36,13 +36,16 @@ contract PhaseThreeAvatar is ERC721AQueryable, ERC2981, VRFV2WrapperConsumerBase
     }
 
     /*///////////////////////////////////////////////////////////////
-                         State Variables V1
+                         State Variables
     //////////////////////////////////////////////////////////////*/
 
+    /// @dev address that can give away tokens
+    address public mintRole;
     address public signer;
-    uint256 public soulboundMintTime;
-    uint256 public publicMintTime;
-    uint256 public publicMintPrice;
+    address public treasury;
+    uint256 public soulboundMintTime = type(uint256).max;
+    uint256 public publicMintTime = type(uint256).max;
+    uint256 public publicMintPrice = type(uint256).max;
 
     /// @dev maximum supply of the ERC721A tokens
     uint256 public maxSupply;
@@ -82,6 +85,7 @@ contract PhaseThreeAvatar is ERC721AQueryable, ERC2981, VRFV2WrapperConsumerBase
 
     constructor(
         address _treasury,
+        address _mintRole,
         address _signer,
         uint256 _maxSupply,
         uint96 _royaltyFee,
@@ -108,11 +112,22 @@ contract PhaseThreeAvatar is ERC721AQueryable, ERC2981, VRFV2WrapperConsumerBase
             numWords: 1
         });
 
+        treasury = _treasury;
+        mintRole = _mintRole;
         signer = _signer;
         randomAlgoHash = _randomAlgoHash;
         randomAlgoIPFSHash = _randomAlgoIPFSHash;
 
         _setDefaultRoyalty(_treasury, _royaltyFee);
+    }
+
+    /*///////////////////////////////////////////////////////////////
+                            Modifiers
+    //////////////////////////////////////////////////////////////*/
+
+    modifier onlyMintRole() {
+        require(msg.sender == mintRole, "Caller is not the mint role");
+        _;
     }
 
     /*///////////////////////////////////////////////////////////////
@@ -166,24 +181,6 @@ contract PhaseThreeAvatar is ERC721AQueryable, ERC2981, VRFV2WrapperConsumerBase
         return _signer == ECDSA.recover(hash, _signature);
     }
 
-    /*///////////////////////////////////////////////////////////////
-                        Admin Operation Functions
-    //////////////////////////////////////////////////////////////*/
-
-    /**
-     * @dev Mint designated amount of tokens to an address as owner
-     * @param _to Address to transfer the tokens
-     * @param _quantity Designated amount of tokens
-     */
-    function mintGiveawayTokens(address _to, uint256 _quantity) external onlyOwner {
-        if (totalSupply() + _quantity > maxSupply) {
-            revert ExceedMaxTokens();
-        }
-
-        _safeMint(_to, _quantity);
-        emit MintTokens(_to, _quantity, totalSupply());
-    }
-
     /**
      * @dev Mint one token to the corresponding soulbound token holder as owner
      * @param _tokenId TokenId of the soulbound token
@@ -233,8 +230,47 @@ contract PhaseThreeAvatar is ERC721AQueryable, ERC2981, VRFV2WrapperConsumerBase
     }
 
     /*///////////////////////////////////////////////////////////////
+                        Admin Operation Functions
+    //////////////////////////////////////////////////////////////*/
+
+    /**
+     * @dev Mint designated amount of tokens to an address as owner
+     * @param _to Address to transfer the tokens
+     * @param _quantity Designated amount of tokens
+     */
+    function mintGiveawayTokens(address _to, uint256 _quantity) external onlyMintRole {
+        if (totalSupply() + _quantity > maxSupply) {
+            revert ExceedMaxTokens();
+        }
+
+        _safeMint(_to, _quantity);
+        emit MintTokens(_to, _quantity, totalSupply());
+    }
+
+    /**
+     * Withdrawal Functions
+     */
+    /**
+     * @dev Withdraw all the funds in the contract
+     * @param _amount Amount of funds to withdraw
+     */
+    function withdraw(uint256 _amount) external payable onlyOwner {
+        payable(treasury).transfer(_amount);
+    }
+
+    /*///////////////////////////////////////////////////////////////
                         Admin Parameters Functions
     //////////////////////////////////////////////////////////////*/
+
+    /**
+     * @dev Set the address of the mintRole
+     * @param _mintRole New address of the mintRole
+     */
+    function setMintRole(address _mintRole) external onlyOwner {
+        mintRole = _mintRole;
+
+        emit AddressSet("mintRole", _mintRole);
+    }
 
     /**
      * @dev Set the address of the signer
@@ -244,6 +280,16 @@ contract PhaseThreeAvatar is ERC721AQueryable, ERC2981, VRFV2WrapperConsumerBase
         signer = _signer;
 
         emit AddressSet("signer", _signer);
+    }
+
+    /**
+     * @dev Set the address that act as treasury and recieve all the fund from token contract.
+     * @param _treasury New address that caller wants to set as the treasury address
+     */
+    function setTreasury(address _treasury) external onlyOwner {
+        treasury = _treasury;
+
+        emit AddressSet("treasury", _treasury);
     }
 
     /**
