@@ -1,16 +1,19 @@
 import { ethers } from 'hardhat'
 import { expect } from 'chai'
 import { PhaseOneFreeMint } from '../build/typechain'
+import { SignerWithAddress } from '@nomicfoundation/hardhat-ethers/signers'
 
 describe('PhaseOneFreeMint', () => {
   const _uriPrefix: string = 'https://example.com/'
   const _uriSuffix: string = '.json'
+  let signers: SignerWithAddress[]
   let phaseOneFreeMint: PhaseOneFreeMint
 
   beforeEach(async () => {
+    signers = await ethers.getSigners()
     phaseOneFreeMint = await ethers
       .getContractFactory('PhaseOneFreeMint')
-      .then((factory) => factory.deploy(_uriPrefix, _uriSuffix))
+      .then((factory) => factory.deploy(signers[0].address, _uriPrefix, _uriSuffix))
   })
 
   describe('airdropInPair', () => {
@@ -25,7 +28,7 @@ describe('PhaseOneFreeMint', () => {
       const [_, address2] = await ethers.getSigners()
       await expect(
         phaseOneFreeMint.connect(address2).airdropInPair(0, 1, address2.address)
-      ).to.be.rejectedWith(`OwnableUnauthorizedAccount("${address2.address}")`)
+      ).to.be.rejectedWith('Caller is not the mint role')
     })
 
     it('should revert if already minted', async () => {

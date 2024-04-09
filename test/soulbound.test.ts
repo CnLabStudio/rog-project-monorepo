@@ -18,6 +18,23 @@ describe('PhaseTwoSoulBound', function () {
       )
   })
 
+  describe('mintGiveawayTokens', function () {
+    it('should revert if not called by the owner', async function () {
+      await expect(
+        phaseTwoSoulBound
+          .connect(signers[1])
+          .mintGiveawayTokens(signers[0].address, 1)
+      ).to.be.revertedWith('Caller is not the mint role')
+    })
+
+    it('should mint tokens to the recipient', async function () {
+      await phaseTwoSoulBound.connect(signers[0]).mintGiveawayTokens(signers[0].address, 1)
+      expect(await phaseTwoSoulBound.balanceOf(signers[0].address)).to.equal(
+        1
+      )
+    })
+  })
+
   describe('transferFrom', function () {
     it('should not be able to transfer tokens from one address to another', async function () {
       // Mint some tokens to the owner
