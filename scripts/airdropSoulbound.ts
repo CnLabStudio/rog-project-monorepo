@@ -20,12 +20,8 @@ async function main() {
   console.log('Contract address:', await phaseTwoSoulBound.getAddress())
 
   const airdropList = [
-    '0xc3FeF2DDc1511e26F1CD1e23306Aff16220ad365',
-    '0x8FD4AaAa4d371292C757A42A5023EEA33Cf06bC1',
-    '0xe17f4d4860524CE21d5CB0FBd9A09D74B7eCf228',
-    '0xfA8C2876C8163De09bA70DAD15F2e43bBFCFa3D2',
-    '0xB44ed7DD11bbe05eD43D6BDDD561c94912862360',
-    '0x61b594b62F44F46930c350172f740104DC1724b2',
+    '0x102DE2b924B901521c98E335E3D01cfAF28Ce240',
+    '0x96B4Df8D9F38806cdBB799041aedC61Bc8a1f7ab',
   ]
 
   for (const address of airdropList) {
