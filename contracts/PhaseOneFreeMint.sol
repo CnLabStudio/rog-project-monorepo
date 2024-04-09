@@ -8,15 +8,12 @@ import "@openzeppelin/contracts/utils/Strings.sol";
 contract PhaseOneFreeMint is Ownable, ERC1155 {
     using Strings for uint256;
 
-    constructor(string memory _uriPrefix, string memory _uriSuffix) ERC1155(_uriPrefix) Ownable(msg.sender) {
-        uriPrefix = _uriPrefix;
-        uriSuffix = _uriSuffix;
-    }
-
     /*///////////////////////////////////////////////////////////////
                          State Variables
     //////////////////////////////////////////////////////////////*/
 
+    /// @dev address that can give away tokens
+    address public mintRole;
     /// @dev uri parameters of the tokenURI of the ERC721 tokenss
     string public uriPrefix;
     string public uriSuffix;
@@ -28,9 +25,32 @@ contract PhaseOneFreeMint is Ownable, ERC1155 {
                                 Events
     //////////////////////////////////////////////////////////////*/
 
+    event AddressSet(string parameter, address value);
     event URISet(string uriPrefix, string uriSuffix);
 
-    function airdropInPair(uint256 _tokenId0, uint256 _tokenId1, address _receiver) external onlyOwner {
+    constructor(address _mintRole, string memory _uriPrefix, string memory _uriSuffix)
+        ERC1155(_uriPrefix)
+        Ownable(msg.sender)
+    {
+        mintRole = _mintRole;
+        uriPrefix = _uriPrefix;
+        uriSuffix = _uriSuffix;
+    }
+
+    /*///////////////////////////////////////////////////////////////
+                            Modifiers
+    //////////////////////////////////////////////////////////////*/
+
+    modifier onlyMintRole() {
+        require(msg.sender == mintRole, "Caller is not the mint role");
+        _;
+    }
+
+    /*///////////////////////////////////////////////////////////////
+                        Admin Operation Functions
+    //////////////////////////////////////////////////////////////*/
+
+    function airdropInPair(uint256 _tokenId0, uint256 _tokenId1, address _receiver) external onlyMintRole {
         if (minted[_receiver]) {
             revert("Already minted");
         }
@@ -42,6 +62,10 @@ contract PhaseOneFreeMint is Ownable, ERC1155 {
     function _airdrop(uint256 _tokenId, address _receiver) internal {
         _mint(_receiver, _tokenId, 1, "");
     }
+
+    /*///////////////////////////////////////////////////////////////
+                        External Functions
+    //////////////////////////////////////////////////////////////*/
 
     function merge(uint256 _tokenId0, uint256 _tokenId1) external {
         _burn(msg.sender, _tokenId0, 1);
@@ -68,6 +92,20 @@ contract PhaseOneFreeMint is Ownable, ERC1155 {
      */
     function uri(uint256 _tokenId) public view override returns (string memory _tokenURI) {
         return string(abi.encodePacked(uriPrefix, _tokenId.toString(), uriSuffix));
+    }
+
+    /*///////////////////////////////////////////////////////////////
+                        Admin Parameters Functions
+    //////////////////////////////////////////////////////////////*/
+
+    /**
+     * @dev Set the address of the mintRole
+     * @param _mintRole New address of the mintRole
+     */
+    function setMintRole(address _mintRole) external onlyOwner {
+        mintRole = _mintRole;
+
+        emit AddressSet("mintRole", _mintRole);
     }
 
     /**
