@@ -73,8 +73,8 @@ const importSignatureTable = async (
 
     for (let i = 0; i < rows.length; i++) {
         const row = rows[i];
-        const address = row.getCell(1).value?.toString().toLowerCase();
-        const signature = row.getCell(2).value?.toString();
+        const address = row.getCell(2).value?.toString().toLowerCase();
+        const signature = row.getCell(3).value?.toString();
 
         const params = {
             TableName: tableNames.signatures,

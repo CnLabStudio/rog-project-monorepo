@@ -44,6 +44,7 @@ export const reveal = async (
         const soulboundService = new SoulboundService();
         const poolService = new PoolService(avatarService, soulboundService);
 
+        // check the ownership
         const isOwner = await avatarService.isOwner(
             address.toLowerCase(),
             tokenId,
@@ -67,13 +68,13 @@ export const reveal = async (
                 message: `sucessfully reveal #${tokenId}.`,
             }),
         };
-    } catch (error) {
+    } catch (error: any) {
         console.error(error);
         return {
             statusCode: 500,
             headers: { "content-type": "application/json" },
             body: JSON.stringify({
-                message: "Error occured during revealing nft.",
+                message: `Error occured during revealing nft: ${error.message}`,
             }),
         };
     }

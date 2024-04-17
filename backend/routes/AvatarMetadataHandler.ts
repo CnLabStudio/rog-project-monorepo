@@ -53,13 +53,13 @@ export const metadata = async (
             },
             body: JSON.stringify(metadata),
         };
-    } catch (error) {
+    } catch (error: any) {
         console.error(error);
         return {
             statusCode: 500,
             headers: { "content-type": "application/json" },
             body: JSON.stringify({
-                message: "Error occured during fetching metadata.",
+                message: `Error occured during fetching metadata: ${error.message}`,
             }),
         };
     }

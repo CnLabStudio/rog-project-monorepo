@@ -30,9 +30,9 @@ export default class UserService {
     async isUserMinted(address: string): Promise<boolean> {
         const params = {
             TableName: this.tableName,
-            Key: {
-                address: address,
-            },
+            FilterExpression: "#address = :address",
+            ExpressionAttributeNames: { "#address": "address" }, // optional names substitution
+            ExpressionAttributeValues: { ":address": address },
             Select: "COUNT",
         };
 

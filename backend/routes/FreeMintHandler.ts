@@ -81,13 +81,13 @@ export const mint = async (
                 message: `sucessfully mint #${firstTokenId} & #${secondTokenId} to ${address}.`,
             }),
         };
-    } catch (error) {
+    } catch (error: any) {
         console.error(error);
         return {
             statusCode: 500,
             headers: { "content-type": "application/json" },
             body: JSON.stringify({
-                message: "Error occured during minting nft.",
+                message: `Error occured during minting nft: ${error.message}`,
             }),
         };
     }

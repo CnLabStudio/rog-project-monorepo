@@ -11,3 +11,6 @@ jspm_packages
 
 # docker
 docker
+
+# dynamodb test
+test.ts

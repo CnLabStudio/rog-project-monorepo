@@ -2,12 +2,15 @@ import { POOLS, VRF } from "../constants";
 import { BlindBoxType, Pool } from "../types";
 import SoulboundService from "./SoulboundService";
 import AvatarService from "./AvatarService";
+import { client } from "../database/DynamoDB";
+import { DocumentClient } from "aws-sdk/clients/dynamodb";
 
 export default class PoolService {
     private seed: bigint;
     private pools: any;
     private avatarService: AvatarService;
     private soulboundService: SoulboundService;
+    private client: DocumentClient;
 
     constructor(
         avatarService: AvatarService,
@@ -17,6 +20,7 @@ export default class PoolService {
         this.pools = POOLS;
         this.avatarService = avatarService;
         this.soulboundService = soulboundService;
+        this.client = client;
     }
 
     // pool type
@@ -28,6 +32,28 @@ export default class PoolService {
     private getPoolByType(type: BlindBoxType): Pool {
         const typeToNum = Number(type);
         return this.pools[typeToNum];
+    }
+
+    // check if the pool is all revealed
+    private async isPoolFull(pool: Pool): Promise<boolean> {
+        const startIdx = Number(pool.startIdx);
+        const size = Number(pool.size);
+
+        const params = {
+            TableName: this.avatarService.getTableName(),
+            FilterExpression: "#revealed >= :start and #revealed <= :end",
+            ExpressionAttributeNames: { "#revealed": "revealed" }, // optional names substitution
+            ExpressionAttributeValues: {
+                ":start": startIdx,
+                ":end": startIdx + size,
+            },
+            Select: "COUNT",
+        };
+
+        const res = await this.client.scan(params).promise();
+        const count = res.Count ?? 0;
+
+        return count < size;
     }
 
     // reveal the avatar tokenId will bind with
@@ -50,6 +76,11 @@ export default class PoolService {
         const type =
             await this.soulboundService.getBlindBoxTypeById(soulboundId);
         const pool = this.getPoolByType(type);
+
+        const isPoolFull = await this.isPoolFull(pool);
+        if (isPoolFull) {
+            throw new Error("The pool is all revealed");
+        }
 
         // get the revealedId
         // seed is u256, need to convert bigint to do the operation

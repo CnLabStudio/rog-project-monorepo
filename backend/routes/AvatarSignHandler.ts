@@ -31,13 +31,13 @@ export const sign = async (
                 signature: signature.signature,
             }),
         };
-    } catch (error) {
+    } catch (error: any) {
         console.error(error);
         return {
             statusCode: 500,
             headers: { "content-type": "application/json" },
             body: JSON.stringify({
-                message: "Error occured during signing.",
+                message: `Error occured during signing: ${error.message}`,
             }),
         };
     }

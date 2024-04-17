@@ -18,6 +18,10 @@ export default class AvatarService {
         this.contract = contract;
     }
 
+    getTableName(): string {
+        return this.tableName;
+    }
+
     async enableReveal(): Promise<boolean> {
         const enable = await this.contract.revealed();
         return enable;
@@ -75,9 +79,9 @@ export default class AvatarService {
     async isAvatarRevealed(avatarId: number): Promise<boolean> {
         const params = {
             TableName: this.tableName,
-            Key: {
-                tokenId: avatarId,
-            },
+            FilterExpression: "#tokenId = :tokenId",
+            ExpressionAttributeNames: { "#tokenId": "tokenId" }, // optional names substitution
+            ExpressionAttributeValues: { ":tokenId": avatarId },
             Select: "COUNT",
         };
 
@@ -87,14 +91,14 @@ export default class AvatarService {
         return count == 0 ? false : true;
     }
 
-    // if revealed_id exists in database,
+    // if revealedId exists in database,
     // then the metadata is revealed
-    async isMetadataRevealed(revealed_id: bigint): Promise<boolean> {
+    async isMetadataRevealed(revealedId: bigint): Promise<boolean> {
         const params = {
             TableName: this.tableName,
             FilterExpression: "#avatar_revealedId = :revealedId",
             ExpressionAttributeValues: {
-                ":revealedId": Number(revealed_id),
+                ":revealedId": Number(revealedId),
             },
             ExpressionAttributeNames: {
                 "#avatar_revealedId": "revealedId",
