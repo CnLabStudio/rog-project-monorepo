@@ -6,7 +6,6 @@ import * as constants from './constants'
 async function main() {
   let addrs = await ethers.getSigners()
 
-  /*
   console.log('Deploying contracts with the account:', addrs[0].address)
   console.log(
     'Account balance:',
@@ -18,6 +17,7 @@ async function main() {
     addrs[0]
   )
   const phaseOneFreeMint = await PhaseOneFreeMint.deploy(
+    addrs[0].address,
     'ipfs://QmVP4B73SedN65s91rv26ihoYWkCYe2v5EXpNEhtkpCrQW/',
     '.json'
   )
@@ -35,12 +35,11 @@ async function main() {
   )
   await phaseTwoSoulBound.waitForDeployment()
   console.log('Contract address:', await phaseTwoSoulBound.getAddress())
-  */
 
   // Deploy
   // Approve
   // SetRandomSeed
-  
+  /*
   const PhaseThreeAvatar = await ethers.getContractFactory(
     'PhaseThreeAvatar',
     addrs[0]
@@ -59,7 +58,7 @@ async function main() {
   )
   await phaseThreeAvatar.waitForDeployment()
   console.log('Contract address:', await phaseThreeAvatar.getAddress())
-  
+  */
 }
 
 // We recommend this pattern to be able to use async/await everywhere
