@@ -36,9 +36,9 @@ function getNetworks(): NetworksUserConfig {
       chainId: 137,
       accounts: [`0x${process.env.PROJECT_PK}`],
     },
-    polygonMumbai: {
-      url: `https://polygon-mumbai.g.alchemy.com/v2/${alchemyApiKey}`,
-      chainId: 80001,
+    polygonAmoy: {
+      url: `https://polygon-amoy.g.alchemy.com/v2/${alchemyApiKey}`,
+      chainId: 80002,
       accounts: [`0x${process.env.PROJECT_PK_TEST}`],
     },
     sepolia: {
@@ -69,7 +69,18 @@ const hardhatConfig: HardhatUserConfig = {
       sepolia: `${process.env.ETHERSCAN_API_KEY}`,
       polygon: `${process.env.POLYGONSCAN_API_KEY}`,
       polygonMumbai: `${process.env.POLYGONSCAN_API_KEY}`,
+      polygonAmoy: `${process.env.POLYGONSCAN_API_KEY}`,
     },
+    customChains: [
+      {
+        network: "polygonAmoy",
+        chainId: 80002,
+        urls: {
+          apiURL: "https://api-amoy.polygonscan.com/api",
+          browserURL: "https://amoy.polygonscan.com/"
+        }
+      }
+    ]
   },
   gasReporter: {
     enabled: process.env.REPORT_GAS ? true : false,
