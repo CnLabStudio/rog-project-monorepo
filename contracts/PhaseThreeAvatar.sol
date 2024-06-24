@@ -248,9 +248,6 @@ contract PhaseThreeAvatar is ERC721AQueryable, ERC2981, VRFV2WrapperConsumerBase
     }
 
     /**
-     * Withdrawal Functions
-     */
-    /**
      * @dev Withdraw all the funds in the contract
      * @param _amount Amount of funds to withdraw
      */
