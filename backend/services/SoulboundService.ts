@@ -1,5 +1,5 @@
 import { BlindBoxType, Metadata } from "../types";
-import { BlackAether, GoldAether, RedAether, TheAether } from "../metadata";
+import { BlackAether, GoldAether, RedAether, BlueAether } from "../metadata";
 import { DocumentClient } from "aws-sdk/clients/dynamodb";
 import { client } from "../database/DynamoDB";
 
@@ -30,7 +30,7 @@ export default class SoulboundService {
         let type: BlindBoxType;
 
         if (tokenId == 0) {
-            type = BlindBoxType.The;
+            type = BlindBoxType.Black;
         } else {
             const params = {
                 TableName: this.tableName,
@@ -63,8 +63,8 @@ export default class SoulboundService {
             case BlindBoxType.Red:
                 metadata = RedAether;
                 break;
-            case BlindBoxType.The:
-                metadata = TheAether;
+            case BlindBoxType.Blue:
+                metadata = BlueAether;
                 break;
             default:
                 throw new Error("Invalid TokenId");

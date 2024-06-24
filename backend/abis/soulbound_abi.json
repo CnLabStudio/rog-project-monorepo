@@ -74,6 +74,25 @@
         "anonymous": false,
         "inputs": [
             {
+                "indexed": false,
+                "internalType": "string",
+                "name": "parameter",
+                "type": "string"
+            },
+            {
+                "indexed": false,
+                "internalType": "address",
+                "name": "value",
+                "type": "address"
+            }
+        ],
+        "name": "AddressSet",
+        "type": "event"
+    },
+    {
+        "anonymous": false,
+        "inputs": [
+            {
                 "indexed": true,
                 "internalType": "address",
                 "name": "owner",
@@ -462,6 +481,19 @@
             { "internalType": "bool", "name": "approved", "type": "bool" }
         ],
         "name": "setApprovalForAll",
+        "outputs": [],
+        "stateMutability": "nonpayable",
+        "type": "function"
+    },
+    {
+        "inputs": [
+            {
+                "internalType": "address",
+                "name": "_mintRole",
+                "type": "address"
+            }
+        ],
+        "name": "setMintRole",
         "outputs": [],
         "stateMutability": "nonpayable",
         "type": "function"

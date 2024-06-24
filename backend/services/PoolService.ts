@@ -53,7 +53,7 @@ export default class PoolService {
         const res = await this.client.scan(params).promise();
         const count = res.Count ?? 0;
 
-        return count < size;
+        return count >= size;
     }
 
     // reveal the avatar tokenId will bind with

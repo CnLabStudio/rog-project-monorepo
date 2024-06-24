@@ -2,6 +2,11 @@
     {
         "inputs": [
             {
+                "internalType": "address",
+                "name": "_mintRole",
+                "type": "address"
+            },
+            {
                 "internalType": "string",
                 "name": "_uriPrefix",
                 "type": "string"
@@ -90,6 +95,25 @@
         ],
         "name": "OwnableUnauthorizedAccount",
         "type": "error"
+    },
+    {
+        "anonymous": false,
+        "inputs": [
+            {
+                "indexed": false,
+                "internalType": "string",
+                "name": "parameter",
+                "type": "string"
+            },
+            {
+                "indexed": false,
+                "internalType": "address",
+                "name": "value",
+                "type": "address"
+            }
+        ],
+        "name": "AddressSet",
+        "type": "event"
     },
     {
         "anonymous": false,
@@ -327,6 +351,15 @@
         "type": "function"
     },
     {
+        "inputs": [],
+        "name": "mintRole",
+        "outputs": [
+            { "internalType": "address", "name": "", "type": "address" }
+        ],
+        "stateMutability": "view",
+        "type": "function"
+    },
+    {
         "inputs": [
             { "internalType": "address", "name": "", "type": "address" }
         ],
@@ -391,6 +424,19 @@
             { "internalType": "bool", "name": "approved", "type": "bool" }
         ],
         "name": "setApprovalForAll",
+        "outputs": [],
+        "stateMutability": "nonpayable",
+        "type": "function"
+    },
+    {
+        "inputs": [
+            {
+                "internalType": "address",
+                "name": "_mintRole",
+                "type": "address"
+            }
+        ],
+        "name": "setMintRole",
         "outputs": [],
         "stateMutability": "nonpayable",
         "type": "function"

@@ -1,6 +1,6 @@
 export enum BlindBoxType {
     Golden,
-    Black,
+    Blue,
     Red,
-    The,
+    Black,
 }
