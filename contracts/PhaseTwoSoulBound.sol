@@ -5,10 +5,8 @@ import "erc721a/contracts/extensions/ERC721AQueryable.sol";
 import "@openzeppelin/contracts/access/Ownable.sol";
 import "@openzeppelin/contracts/utils/Strings.sol";
 
-error ExceedMaxTokens();
 error TokenNotExist();
 error TokenIsSoulbound();
-error InvalidInput();
 
 contract PhaseTwoSoulBound is ERC721AQueryable, Ownable {
     using Strings for uint256;
@@ -30,7 +28,6 @@ contract PhaseTwoSoulBound is ERC721AQueryable, Ownable {
     event AddressSet(string parameter, address value);
     event MintTokens(address to, uint256 quantity, uint256 totalSupply);
     event URISet(string uriPrefix, string uriSuffix);
-    event MaxSupplySet(uint256 maxTokenSupply);
 
     /*///////////////////////////////////////////////////////////////
                             Constructor
