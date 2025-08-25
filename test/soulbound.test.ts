@@ -17,6 +17,7 @@ describe('PhaseTwoSoulBound', function () {
         factory.deploy(signers[0].address, _uriPrefix, _uriSuffix)
       )
   })
+  
 
   describe('mintGiveawayTokens', function () {
     it('should revert if not called by the owner', async function () {
@@ -35,6 +36,15 @@ describe('PhaseTwoSoulBound', function () {
     })
   })
 
+  describe("Token Id", function () {
+    it("should be owner of token 1 instead of 0", async function () {
+        await phaseTwoSoulBound.connect(signers[0]).mintGiveawayTokens(signers[0].address, 1)
+        expect(await phaseTwoSoulBound.balanceOf(signers[0].address)).to.equal(1);
+        const owner = await phaseTwoSoulBound.ownerOf(1);
+        expect(owner).to.be.equal(signers[0].address);
+    })
+  })
+
   describe('transferFrom', function () {
     it('should not be able to transfer tokens from one address to another', async function () {
       // Mint some tokens to the owner
@@ -45,7 +55,7 @@ describe('PhaseTwoSoulBound', function () {
         phaseTwoSoulBound.safeTransferFrom(
           signers[0].address,
           signers[1].address,
-          0
+          1
         )
       ).to.be.revertedWithCustomError(phaseTwoSoulBound, 'TokenIsSoulbound')
     })

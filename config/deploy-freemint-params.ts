@@ -1,7 +1,7 @@
 import 'dotenv/config'
 
 module.exports = [
-  '0x45F571d30157a2E548A9a5789F69558aC56955dA',
-  'ipfs://QmVP4B73SedN65s91rv26ihoYWkCYe2v5EXpNEhtkpCrQW/',
+  '0xCf3eD5Eb7850c885AbD6F0170c1fA66ef7c758fF',
+  'ipfs://QmRLrtC2n7szDHr3sAvwbGaQj6fNRahHdFKpTQfDQCe79j/',
   '.json',
 ]

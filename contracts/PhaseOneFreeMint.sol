@@ -1,11 +1,12 @@
 // SPDX-License-Identifier: MIT
-pragma solidity 0.8.20;
+pragma solidity 0.8.19;
 
 import "@openzeppelin/contracts/access/Ownable.sol";
 import "@openzeppelin/contracts/token/ERC1155/ERC1155.sol";
 import "@openzeppelin/contracts/utils/Strings.sol";
+import "@openzeppelin/contracts/security/ReentrancyGuard.sol";
 
-contract PhaseOneFreeMint is Ownable, ERC1155 {
+contract PhaseOneFreeMint is Ownable, ERC1155, ReentrancyGuard {
     using Strings for uint256;
 
     /*///////////////////////////////////////////////////////////////
@@ -22,16 +23,17 @@ contract PhaseOneFreeMint is Ownable, ERC1155 {
     mapping(address => bool) public minted;
 
     /*///////////////////////////////////////////////////////////////
-                                Events
+                            Events or Errors
     //////////////////////////////////////////////////////////////*/
+
+    error InvalidAddressZero();
+    error Minted();
 
     event AddressSet(string parameter, address value);
     event URISet(string uriPrefix, string uriSuffix);
 
-    constructor(address _mintRole, string memory _uriPrefix, string memory _uriSuffix)
-        ERC1155(_uriPrefix)
-        Ownable(msg.sender)
-    {
+    constructor(address _mintRole, string memory _uriPrefix, string memory _uriSuffix) ERC1155(_uriPrefix) {
+        if (_mintRole == address(0)) revert InvalidAddressZero();
         mintRole = _mintRole;
         uriPrefix = _uriPrefix;
         uriSuffix = _uriSuffix;
@@ -50,13 +52,15 @@ contract PhaseOneFreeMint is Ownable, ERC1155 {
                         Admin Operation Functions
     //////////////////////////////////////////////////////////////*/
 
-    function airdropInPair(uint256 _tokenId0, uint256 _tokenId1, address _receiver) external onlyMintRole {
-        if (minted[_receiver]) {
-            revert("Already minted");
-        }
+    function airdropInPair(uint256 _tokenId0, uint256 _tokenId1, address _receiver)
+        external
+        onlyMintRole
+        nonReentrant
+    {
+        if (minted[_receiver]) revert Minted();
+        minted[_receiver] = true;
         _airdrop(_tokenId0, _receiver);
         _airdrop(_tokenId1, _receiver);
-        minted[_receiver] = true;
     }
 
     function _airdrop(uint256 _tokenId, address _receiver) internal {
@@ -103,6 +107,7 @@ contract PhaseOneFreeMint is Ownable, ERC1155 {
      * @param _mintRole New address of the mintRole
      */
     function setMintRole(address _mintRole) external onlyOwner {
+        if (_mintRole == address(0)) revert InvalidAddressZero();
         mintRole = _mintRole;
 
         emit AddressSet("mintRole", _mintRole);

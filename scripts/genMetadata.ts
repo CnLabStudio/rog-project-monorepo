@@ -1,28 +1,23 @@
 import fs from 'fs'
 
-const rawDesc = `Introducing the ROG Slash206 NFT; \n
-Phase One: ROG's inaugural journey into the Metaverse. \n\n
-In the intricate realm of Cybergank, every entity treads with caution. Meet ZEI-6, a formerly operational M.O.U.S.E. (Multiple Operational Utilities Strategic Enforcer) housed within the Relic room, now compromised by significant rAM degradation.\n\n
-Seamlessly Mint, Collect, and Burn the pertinent Relic artifacts to assist ZEI-6 in its quest to re-emerge and integrate into the expansive ROG Metaverse.`
-
-const mergeDesc = ['Reality', 'Entertainment', 'Knowledge', 'Social', 'Soul']
+const rawDesc = 'Discover diverse "Relic" and "Relic EVO" artifacts scattered throughout SLASH206.'
 
 const nameList = [
   'Relic Camera',
-  'Relic Handheld',
-  'Relic PC',
-  'Relic Lantern',
-  'Relic Player',
-  'Relic Film',
-  'Relic ROM',
+  'Relic Handheld Console',
+  'Relic Computer',
+  'Relic Slide Projector',
+  'Relic Cassette Player',
+  'Relic Roll Film',
+  'Relic ROM Cart',
   'Relic Disk',
   'Relic Slide',
   'Relic Cassette',
-  '/Film Camera',
-  '/Handheld Game',
-  '/PC',
-  '/Slideshow',
-  'Relic Player',
+  'Relic EVO Camera',
+  'Relic EVO Handheld Game',
+  'Relic EVO Computer',
+  'Relic EVO Slide Projector',
+  'Relic EVO Cassette Player'
 ]
 
 // Function to export JSON data to a file
@@ -44,18 +39,18 @@ function exportJSONToFile(filePath: string, jsonData: object): Promise<void> {
 
 async function exportJson() {
   for (let i = 0; i < 15; i++) {
-    let description = ``
+    let imageLink = `ipfs://QmXt65CZYZpdfrnKb3MACqHgyrvTWhZXFBirpXfHg8NNxE/`
     if (i < 10) {
-      description = rawDesc
+      imageLink += `${i}.png`
     } else {
-      description = mergeDesc[i - 10]
+      imageLink += `${i-10}-${i-5}.mp4`
     }
     const jsonData = {
       name: nameList[i],
-      description: description,
-      image: `ipfs://QmUoC9dFEUYsESbHA1jrfuB5VSFCUMAENrGXchpf2PwJht/${i}.png`,
+      description: rawDesc,
+      image: imageLink,
     }
-    await exportJSONToFile(`export/freemints/json/${i}.json`, jsonData)
+    await exportJSONToFile(`export/freemints/json/prod/${i}.json`, jsonData)
   }
 }
 

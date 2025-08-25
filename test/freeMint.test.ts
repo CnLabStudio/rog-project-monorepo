@@ -36,7 +36,7 @@ describe('PhaseOneFreeMint', () => {
       await phaseOneFreeMint.airdropInPair(0, 1, address2.address)
       await expect(
         phaseOneFreeMint.airdropInPair(0, 1, address2.address)
-      ).to.be.rejectedWith('Already minted')
+      ).to.be.rejectedWith('Minted()')
     })
   })
 

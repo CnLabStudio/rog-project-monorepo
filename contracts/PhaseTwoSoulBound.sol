@@ -1,5 +1,5 @@
 // SPDX-License-Identifier: MIT
-pragma solidity 0.8.20;
+pragma solidity 0.8.19;
 
 import "erc721a/contracts/extensions/ERC721AQueryable.sol";
 import "@openzeppelin/contracts/access/Ownable.sol";
@@ -22,8 +22,12 @@ contract PhaseTwoSoulBound is ERC721AQueryable, Ownable {
     string public uriSuffix;
 
     /*///////////////////////////////////////////////////////////////
-                                Events
+                            Events or Errors
     //////////////////////////////////////////////////////////////*/
+
+
+    error InvalidAddressZero();
+    error ExceedMaxTokens();
 
     event AddressSet(string parameter, address value);
     event MintTokens(address to, uint256 quantity, uint256 totalSupply);
@@ -35,8 +39,8 @@ contract PhaseTwoSoulBound is ERC721AQueryable, Ownable {
 
     constructor(address _mintRole, string memory _uriPrefix, string memory _uriSuffix)
         ERC721A("PhaseTwoSoulBound", "PTSB")
-        Ownable(msg.sender)
     {
+        if (_mintRole == address(0)) revert InvalidAddressZero();
         mintRole = _mintRole;
         uriPrefix = _uriPrefix;
         uriSuffix = _uriSuffix;
@@ -72,11 +76,13 @@ contract PhaseTwoSoulBound is ERC721AQueryable, Ownable {
      * @param _tokenId TokenId which caller wants to get the metadata of
      */
     function tokenURI(uint256 _tokenId) public view override(IERC721A, ERC721A) returns (string memory _tokenURI) {
-        if (!_exists(_tokenId)) {
-            revert TokenNotExist();
-        }
+        if (!_exists(_tokenId)) revert TokenNotExist();
 
         return string(abi.encodePacked(uriPrefix, _tokenId.toString(), uriSuffix));
+    }
+
+    function _startTokenId() internal pure override returns (uint256) {
+        return 1;
     }
 
     /**
@@ -94,9 +100,7 @@ contract PhaseTwoSoulBound is ERC721AQueryable, Ownable {
         override
     {
         // Revert if transfers are not from the 0 address and not to the 0 address
-        if (_from != address(0)) {
-            revert TokenIsSoulbound();
-        }
+        if (_from != address(0)) revert TokenIsSoulbound();
 
         return;
     }
@@ -112,6 +116,7 @@ contract PhaseTwoSoulBound is ERC721AQueryable, Ownable {
      */
     function mintGiveawayTokens(address _to, uint256 _quantity) external onlyMintRole {
         _safeMint(_to, _quantity);
+        if (totalSupply() > type(uint64).max) revert ExceedMaxTokens();
         emit MintTokens(_to, _quantity, totalSupply());
     }
 
@@ -124,6 +129,7 @@ contract PhaseTwoSoulBound is ERC721AQueryable, Ownable {
      * @param _mintRole New address of the mintRole
      */
     function setMintRole(address _mintRole) external onlyOwner {
+        if (_mintRole == address(0)) revert InvalidAddressZero();
         mintRole = _mintRole;
 
         emit AddressSet("mintRole", _mintRole);
